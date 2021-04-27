@@ -1,6 +1,9 @@
 package forcingphase
 
-import "math"
+import (
+    "math"
+    "fmt"
+)
 
 func ConvertTimeToPhase(period float64) func(float64) float64 {
     return func(simtime float64) float64 {
@@ -43,7 +46,27 @@ type PhaseConverter struct {
     DifferenceInPeriods func(float64, float64) int
 }
 
-func NewPhaseConverter(frequency float64) *PhaseConverter {
+type ZeroForcingFrequencyError float64
+
+func (f ZeroForcingFrequencyError) Error() string {
+    return "Forcing frequency cannot be zero"
+}
+
+type NegativeForcingFrequencyError float64
+
+func (f NegativeForcingFrequencyError) Error() string {
+    return fmt.Sprintf("The model cannot handle negative forcing frequency %g", f)
+}
+
+func NewPhaseConverter(frequency float64) (*PhaseConverter, error) {
+    if (frequency == 0) {
+        return nil, ZeroForcingFrequencyError(frequency)
+    }
+
+    if (frequency < 0) {
+        return nil, NegativeForcingFrequencyError(frequency)
+    }
+
     period := 2.0 * math.Pi / frequency
 
     return &PhaseConverter{
@@ -51,34 +74,6 @@ func NewPhaseConverter(frequency float64) *PhaseConverter {
         TimeToPhase: ConvertTimeToPhase(period),
         TimeIntoCycle: ConvertTimeIntoCycle(period),
         ForwardToPhase: RunForwardToPhase(period),
-        DifferenceInPeriods: GetDifferenceInPeriods(period)
-    }
+        DifferenceInPeriods: GetDifferenceInPeriods(period),
+    }, nil
 }
-
-/*
-
-struct PhaseConverter
-    time_to_phase
-    time_into_cycle
-    forward_to_phase
-    difference_in_periods
-    period
-
-    PhaseConverter(frequency::Frequency) = begin
-        if frequency > 0
-            period = 2 * pi / frequency
-        elseif frequency == 0
-            error("Forcing frequency cannot be zero")
-        else
-            error("The model cannot handle negative forcing frequencies")
-        end
-
-        time_to_phase = (time) -> convert_time_to_phase(period, time)
-        time_into_cycle = (time) -> convert_time_into_cycle(period, time)
-        forward_to_phase = (time, phase) -> convert_forward_to_phase(period, time, phase)
-        difference_in_periods = (time1, time2) -> convert_difference_in_periods(period, time1, time2)
-
-        new(time_to_phase, time_into_cycle, forward_to_phase, difference_in_periods, period)
-    end
-end
-*/

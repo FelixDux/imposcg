@@ -1,8 +1,30 @@
 package forcingphase
 
-import "testing"
+import ("testing"
+        "reflect")
 
 // Look here for table-driven tests https://dave.cheney.net/2013/06/09/writing-table-driven-tests-in-go
+
+var frequencyErrorTests = [] struct {
+    frequency float64
+    errorType reflect.Type
+}{
+    {0, reflect.TypeOf(ZeroForcingFrequencyError(0))},
+    {-3.4, reflect.TypeOf(NegativeForcingFrequencyError(0))},
+    {4.3, reflect.TypeOf(nil)},
+}
+
+func TestFrequencyErrors(t *testing.T) {
+    for _, tt := range frequencyErrorTests {
+        _, gotErr := NewPhaseConverter(tt.frequency)
+
+        gotErrType := reflect.TypeOf(gotErr)
+
+        if gotErrType != tt.errorType {
+            t.Errorf("Frequency of %g should cause %s not %s", tt.frequency, tt.errorType, gotErrType)
+        }
+    }
+}
 
 func TestConvertTimeToPhase(t *testing.T) {
 	tm := 3.0

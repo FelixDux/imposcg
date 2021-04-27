@@ -2,26 +2,28 @@ package forcingphase
 
 import "testing"
 
-func TestTimeToPhase(t *testing.T) {
+// Look here for table-driven tests https://dave.cheney.net/2013/06/09/writing-table-driven-tests-in-go
+
+func TestConvertTimeToPhase(t *testing.T) {
 	tm := 3.0
 	p := 2.0
-	got := TimeToPhase(p, tm)
+	got := ConvertTimeToPhase(p)(tm)
 
 	expect:= 0.5
 
 	if got != expect {
-		t.Errorf("TimeToPhase(%f, %f) == %f, expected %f", p, tm, got, expect)
+		t.Errorf("ConvertTimeToPhase(%f)(%f) == %f, expected %f", p, tm, got, expect)
 	}
 }
 
-func TestTimeIntoCycle(t *testing.T) {
+func TestConvertTimeIntoCycle(t *testing.T) {
 	phase := 0.80
 	period := 1.25
 	expect := 1.0
-	got := TimeIntoCycle(period, phase)
+	got := ConvertTimeIntoCycle(period)(phase)
 
 	if got != expect {
-		t.Errorf("TimeIntoCycle(%f, %f) == %f, expected %f", period, phase, got, expect)
+		t.Errorf("ConvertTimeIntoCycle(%f)(%f) == %f, expected %f", period, phase, got, expect)
 	}
 }
 

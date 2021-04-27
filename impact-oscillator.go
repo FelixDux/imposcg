@@ -7,5 +7,5 @@ import ("fmt"
 "github.com/FelixDux/imposcg/dynamics/forcingphase")
 
 func main() {
-	fmt.Println(forcingphase.TimeToPhase(3, 2))
+	fmt.Println(forcingphase.ConvertTimeToPhase(3)(2))
 }

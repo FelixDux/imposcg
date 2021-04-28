@@ -2,32 +2,20 @@ package forcingphase
 
 import (
     "math"
-    "fmt"
+    "github.com/FelixDux/imposcg/dynamics/parameters"
 )
 
 type PhaseConverter struct {
     Period float64
 }
 
-type ZeroForcingFrequencyError float64
-
-func (f ZeroForcingFrequencyError) Error() string {
-    return "Forcing frequency cannot be zero"
-}
-
-type NegativeForcingFrequencyError float64
-
-func (f NegativeForcingFrequencyError) Error() string {
-    return fmt.Sprintf("The model cannot handle negative forcing frequency %g", f)
-}
-
 func NewPhaseConverter(frequency float64) (*PhaseConverter, error) {
     if (frequency == 0) {
-        return nil, ZeroForcingFrequencyError(frequency)
+        return nil, parameters.ZeroForcingFrequencyError(frequency)
     }
 
     if (frequency < 0) {
-        return nil, NegativeForcingFrequencyError(frequency)
+        return nil, parameters.NegativeForcingFrequencyError(frequency)
     }
 
     period := 2.0 * math.Pi / frequency

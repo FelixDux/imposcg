@@ -6,16 +6,15 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+    "github.com/FelixDux/imposcg/dynamics/parameters"
 )
-
-// Look here for table-driven tests https://dave.cheney.net/2013/06/09/writing-table-driven-tests-in-go
 
 var frequencyErrorTests = [] struct {
     frequency float64
     errorType reflect.Type
 }{
-    {0, reflect.TypeOf(ZeroForcingFrequencyError(0))},
-    {-3.4, reflect.TypeOf(NegativeForcingFrequencyError(0))},
+    {0, reflect.TypeOf(parameters.ZeroForcingFrequencyError(0))},
+    {-3.4, reflect.TypeOf(parameters.NegativeForcingFrequencyError(0))},
     {4.3, reflect.TypeOf(nil)},
 }
 

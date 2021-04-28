@@ -1,8 +1,12 @@
 package forcingphase
 
-import ("testing"
-        "reflect"
-        "math")
+import (
+	"math"
+	"reflect"
+	"testing"
+
+	"github.com/google/go-cmp/cmp"
+)
 
 // Look here for table-driven tests https://dave.cheney.net/2013/06/09/writing-table-driven-tests-in-go
 
@@ -54,60 +58,64 @@ func TestConvertTimeIntoCycle(t *testing.T) {
 	}
 }
 
-/*
-module TestDynamics
-    using Test
-    using Dynamics
+var ints = [] int {1, 2, 4, 5, 16}
+var frequencies = [] float64 {4.89, 2.76}
+var start_time = 0.02
 
-    @testset "Phase conversion" begin
-        ints = (1, 2, 4, 5, 16)
-        frequencies = (4.89, 2.76)
-        start_time = 0.02;
+const tol = 1e-6
+var opt = cmp.Comparer(func(x, y float64) bool {
+    return math.Abs(x-y) < tol
+})
 
-        @testset "Phase converter converts consistently in both directions" for i in ints, f in frequencies
-            begin
-                converter = PhaseConverter(f)
+func TestShiftTimeInPeriods(t *testing.T) {
+    for _, f := range frequencies {
+        conv, _ := NewPhaseConverter(f)
 
-                new_time = i * converter.period + start_time |> converter.time_to_phase |> converter.time_into_cycle
+        for _, i := range ints {
+            time_shift := float64(i)*conv.Period
 
-                @test isapprox(new_time, start_time)
-                
-            end
-        end
+            shifted_time := time_shift + start_time
 
-        @testset "Phase converter returns correct number of periods between times" for i in ints, f in frequencies
-            begin
-                converter = PhaseConverter(f)
+            new_time := conv.TimeIntoCycle(conv.TimeToPhase(shifted_time))
 
-                new_time = i * converter.period + start_time 
+            if !cmp.Equal(new_time, start_time, opt) {
+                t.Errorf("Converter with frequency %g does not convert consistently in both directions (start time %g, time shift %g, end time %g, %d periods)",
+                        f, start_time, time_shift, new_time, i)
+            }
 
-                @test i == converter.difference_in_periods(start_time, new_time)
-                
-            end
-        end
+            n := conv.DifferenceInPeriods(start_time, shifted_time)
+            if i != n {
+                t.Errorf("Converter with frequency %g does not return correct number of periods %g between times %g and %g: expected %d, got %d",
+                        f, conv.Period, start_time, shifted_time, i, n)                
+            }
+        }
+    }
+}
 
-        @testset "Phase converter runs forward to specified phase correctly" for i in ints, f in frequencies[2:end-1]
-            begin
-                converter = PhaseConverter(f)
-                phase = 0.6
-                small_time = 0.2
-                big_time = 0.8
+func TestForwardToPhase(t *testing.T) {
+    for _, f := range frequencies {
+        conv, _ := NewPhaseConverter(f)
 
-                time_delta = i * converter.period
+        for _, i := range ints {
+            phase := 0.6
+            small_time := 0.2
+            big_time := 0.8
 
-                new_small = converter.forward_to_phase(time_delta + small_time, phase)
+            time_delta := float64(i) * conv.Period
 
-                @test isapprox(converter.time_to_phase(new_small), phase)
-                @test new_small > small_time
-                @test isapprox(new_small - time_delta, phase*converter.period)
+            new_small := conv.ForwardToPhase(time_delta + small_time, phase)
+            new_small_phase := conv.TimeToPhase(new_small)
 
-                new_big = converter.forward_to_phase(time_delta + big_time, phase)
+            if !cmp.Equal(phase, new_small_phase, opt) {
+                t.Errorf("Phase converter with frequency %g runs forward time %g from phase %g to phase %g, expected %g", f, time_delta, phase, new_small_phase, phase)
+            }
 
-                @test isapprox(converter.time_to_phase(new_big), phase)
-                @test new_big > big_time
-                @test isapprox(new_big - time_delta, phase*converter.period)
-            end
-        end
-    end
-end
-*/
+            new_big := conv.ForwardToPhase(time_delta + big_time, phase)
+            new_big_phase := conv.TimeToPhase(new_big)
+
+            if !cmp.Equal(phase, new_big_phase, opt) {
+                t.Errorf("Phase converter with frequency %g runs forward time %g from phase %g to phase %g, expected %g", f, time_delta, phase, new_big_phase, phase)
+            }
+        }
+    }
+}

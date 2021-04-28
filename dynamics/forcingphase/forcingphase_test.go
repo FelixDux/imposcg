@@ -1,7 +1,8 @@
 package forcingphase
 
 import ("testing"
-        "reflect")
+        "reflect"
+        "math")
 
 // Look here for table-driven tests https://dave.cheney.net/2013/06/09/writing-table-driven-tests-in-go
 
@@ -28,13 +29,14 @@ func TestFrequencyErrors(t *testing.T) {
 
 func TestConvertTimeToPhase(t *testing.T) {
 	tm := 3.0
-	p := 2.0
-	got := ConvertTimeToPhase(p)(tm)
+	f := math.Pi
+    conv, _ := NewPhaseConverter(f)
+	got := conv.TimeToPhase(tm)
 
 	expect:= 0.5
 
 	if got != expect {
-		t.Errorf("ConvertTimeToPhase(%f)(%f) == %f, expected %f", p, tm, got, expect)
+		t.Errorf("ConvertTimeToPhase(%g)(%g) == %g, expected %g", f, tm, got, expect)
 	}
 }
 
@@ -42,10 +44,13 @@ func TestConvertTimeIntoCycle(t *testing.T) {
 	phase := 0.80
 	period := 1.25
 	expect := 1.0
-	got := ConvertTimeIntoCycle(period)(phase)
+	f := 2.0*math.Pi/period
+    conv, _ := NewPhaseConverter(f)
+
+	got := conv.TimeIntoCycle(phase)
 
 	if got != expect {
-		t.Errorf("ConvertTimeIntoCycle(%f)(%f) == %f, expected %f", period, phase, got, expect)
+		t.Errorf("ConvertTimeIntoCycle(%g)(%g) == %g, expected %g", f, phase, got, expect)
 	}
 }
 
@@ -58,14 +63,6 @@ module TestDynamics
         ints = (1, 2, 4, 5, 16)
         frequencies = (4.89, 2.76)
         start_time = 0.02;
-
-        @testset "Phase converter handles error conditions" for params in (
-            Dict("frequency" => 0, "message" => "Forcing frequency cannot be zero"),
-            Dict([("frequency", -1), ("message", "The model cannot handle negative forcing frequencies")]))
-            begin
-                @test_throws ErrorException(params["message"]) converter = PhaseConverter(params["frequency"])
-            end
-        end
 
         @testset "Phase converter converts consistently in both directions" for i in ints, f in frequencies
             begin

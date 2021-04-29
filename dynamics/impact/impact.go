@@ -25,6 +25,8 @@ type Impact struct {
 	Velocity float64
 }
 
+type Generator func(impactTime float64, impactVelocity float64) *Impact
+
 func ImpactGenerator(phaseConverter forcingphase.PhaseConverter) func(impactTime float64, impactVelocity float64) *Impact {
 	return func (impactTime float64, impactVelocity float64) *Impact  {
 		return &Impact{Phase: phaseConverter.TimeToPhase(impactTime), Time: impactTime, Velocity: impactVelocity}

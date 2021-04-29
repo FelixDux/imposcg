@@ -23,7 +23,6 @@ type Impact struct {
 	Phase float64
 	Time float64
 	Velocity float64
-	comparer cmp.Option
 }
 
 func ImpactGenerator(phaseConverter forcingphase.PhaseConverter) func(impactTime float64, impactVelocity float64) *Impact {
@@ -52,8 +51,12 @@ func ImpactComparer(phaseTolerance, velocityTolerance float64) cmp.Option {
 	})
 }
 
+func (impact Impact) almostEqualAltOpt(other Impact, comparer cmp.Option) bool {
+	return cmp.Equal(impact, other, comparer)
+}
+
 var defaultImpactComparer = ImpactComparer(1e-3, 1e-3)
 
 func (impact Impact) almostEqual(other Impact) bool {
-	return cmp.Equal(impact, other, defaultImpactComparer)
+	return impact.almostEqualAltOpt(other, defaultImpactComparer)
 }

@@ -1,7 +1,6 @@
 package dynamics
 import (
     "github.com/FelixDux/imposcg/dynamics/impact"
-    "github.com/FelixDux/imposcg/dynamics/forcingphase"
     "github.com/FelixDux/imposcg/dynamics/parameters"
     "github.com/FelixDux/imposcg/dynamics/sticking"
     "github.com/FelixDux/imposcg/dynamics/motion"
@@ -29,10 +28,12 @@ type ChatterChecker struct {
 		impactCount uint
 }
 
-func NewChatterChecker(parameters parameters.Parameters, velocityThreshold float64, countThreshold uint) *ChatterChecker {
-	sticking, _ := sticking.NewSticking(parameters)
+func NewChatterChecker(parameters parameters.Parameters, velocityThreshold float64, countThreshold uint) (*ChatterChecker, error) {
+	sticking, err := sticking.NewSticking(parameters)
 
-	// TODO: handle err
+	if err != nil {
+		return nil, err
+	}
 
 	canChatter := true
 	accumulationTime := func (impact impact.Impact) float64 {return impact.Time}
@@ -52,7 +53,7 @@ func NewChatterChecker(parameters parameters.Parameters, velocityThreshold float
 				impactCount: 0,
 				canChatter: canChatter,
 				accumulationTime: accumulationTime,
-				sticking: *sticking}
+				sticking: *sticking}, nil
 }
 
 func (checker ChatterChecker) Check(impact impact.Impact) *ChatterResult {
@@ -71,7 +72,7 @@ func (checker ChatterChecker) Check(impact impact.Impact) *ChatterResult {
 	return &ChatterResult{isChatter: false, accumulationImpact: impact}
 }
 
-func DefaultChatterChecker(parameters parameters.Parameters) *ChatterChecker {
+func DefaultChatterChecker(parameters parameters.Parameters) (*ChatterChecker, error) {
 	return NewChatterChecker(parameters, 0.05, 10)
 }
 
@@ -99,12 +100,20 @@ type ImpactMap struct {
 	chatterChecker ChatterChecker
 }
 
-func ImpactMapGenerator(parameters parameters.Parameters) func (impact.Impact) *ImpactMap {
-	initialiser, _ := motion.MotionBetweenImpactsInitialiser(parameters)
+func NewImpactMap(parameters parameters.Parameters) (*ImpactMap, error) {
+	motion, errMotion := motion.NewMotionBetweenImpacts(parameters)
 
-	// TODO: handle err
+	if errMotion != nil {
+		return nil, errMotion
+	}
 
-	return func(impact impact.Impact) *ImpactMap {return &ImpactMap{motion: *initialiser(impact), chatterChecker: *DefaultChatterChecker(parameters)}}
+	chatterChecker, errChatter := DefaultChatterChecker(parameters)
+
+	if errChatter != nil {
+		return nil, errChatter
+	}
+
+	return &ImpactMap{motion: *motion, chatterChecker: *chatterChecker}, nil
 }
 
 func (impactMap ImpactMap) GenerateImpact(Time float64, Velocity float64) *impact.Impact {
@@ -146,7 +155,7 @@ func (impactMap ImpactMap) iterate(initialImpact impact.Impact, numIterations ui
 		}
 	}
 
-	return &IterationResult{longExcursions: longExcursions}
+	return &IterationResult{longExcursions: longExcursions, Impacts: trajectory}
 }
 
 // Convenient overload
@@ -156,7 +165,7 @@ func (impactMap ImpactMap) IterateFromPoint(phi float64, v float64, numIteration
 }
 
 // Generate a singularity set
-func (impactMap ImpactMap) singularity_set(numPoints uint) []impact.Impact {
+func (impactMap ImpactMap) SingularitySet(numPoints uint) []impact.Impact {
 	if numPoints == 0 {
 		numPoints = 1
 	}

@@ -58,22 +58,21 @@ type MotionBetweenImpacts struct {
 // Generates a trajectory from one impact to the next
 //
 
-	motion MotionAtTime
+	motionModelGenerator func(impact.Impact) MotionAtTime
 	sticking sticking.Sticking
 	search SearchParameters
 	offset float64
 
 }
 
-func MotionBetweenImpactsInitialiser(parameters parameters.Parameters) (func(impact.Impact) *MotionBetweenImpacts, error) {
+func NewMotionBetweenImpacts(parameters parameters.Parameters) (*MotionBetweenImpacts, error) {
 	sticking, err := sticking.NewSticking(parameters)
 
 	if err != nil {
 		return nil, err
 	} else {
 		converter := &sticking.Converter
-		return func(impact impact.Impact) *MotionBetweenImpacts {
-			return &MotionBetweenImpacts{motion: *NewMotionAtTime(parameters, converter, impact), sticking: *sticking, search: DefaultSearchParameters(), offset: parameters.ObstacleOffset}}, nil
+		return &MotionBetweenImpacts{motionModelGenerator: func(impact impact.Impact) MotionAtTime {return *NewMotionAtTime(parameters, converter, impact)}, sticking: *sticking, search: DefaultSearchParameters(), offset: parameters.ObstacleOffset}, nil
 	}
 }
 
@@ -133,12 +132,14 @@ func (motion MotionBetweenImpacts) NextImpact(impact impact.Impact) *NextImpactR
 
 	stepSize := motion.search.InitialStepSize
 
+	motionModel := motion.motionModelGenerator(impact)
+
 	currentTime := result.Motion[len(result.Motion) - 1].Time
 
 	for math.Abs(stepSize) > motion.search.MinimumStepSize && result.FoundImpact {
 		currentTime += stepSize
 
-		currentState := motion.motion.State(currentTime)
+		currentState := motionModel.State(currentTime)
 
 		// Update step size - this is the bisection search algorithm
 		if currentState.Displacement < motion.offset {
@@ -158,7 +159,7 @@ func (motion MotionBetweenImpacts) NextImpact(impact impact.Impact) *NextImpactR
 			stepSize = 0;
 		}
 
-		if (motion.motion.LongExcursion(currentTime)) {
+		if (motionModel.LongExcursion(currentTime)) {
 			result.FoundImpact = false;
 		}
 	}

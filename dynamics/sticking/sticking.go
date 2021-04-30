@@ -34,7 +34,7 @@ func NewSticking(parameters parameters.Parameters) (*Sticking, error) {
 	} else { 
 		converter, err := forcingphase.NewPhaseConverter(parameters.ForcingFrequency)
 
-		if err != nil {
+		if err == nil {
 
 			// (OK to divide by.ForcingFrequency because zero case trapped above)
 			angle := math.Acos(parameters.ObstacleOffset) 

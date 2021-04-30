@@ -2,10 +2,19 @@
 
 package main
 
-import ("fmt"
+import (
+	"fmt"
 
-"github.com/FelixDux/imposcg/dynamics/parameters"
-"github.com/FelixDux/imposcg/dynamics")
+	"github.com/FelixDux/imposcg/dynamics"
+	"github.com/FelixDux/imposcg/dynamics/parameters"
+
+	"image/color"
+
+	"gonum.org/v1/plot"
+	"gonum.org/v1/plot/font"
+	"gonum.org/v1/plot/plotter"
+	"gonum.org/v1/plot/vg"
+)
 
 func main() {
 	fmt.Println("Impact Oscillator")
@@ -30,9 +39,47 @@ func main() {
 		return
 	}
 
-	data := impactMap.IterateFromPoint(0.0, 0.0, 100)
+	phi := 0.0
+	v := 0.0
+	data := impactMap.IterateFromPoint(phi, v, 1000)
 
-	for _, point := range(data.Impacts) {
-		fmt.Printf("%g\t%g\n", point.Phase, point.Velocity)
+	scatterData := make(plotter.XYs, len(data.Impacts))
+
+	for i, point := range(data.Impacts) {
+		scatterData[i].X = point.Phase
+		scatterData[i].Y = point.Velocity
+	}
+
+	// Create a new plot, set its title and
+	// axis labels.
+
+	// ω σ π
+
+	p := plot.New()
+	
+	p.Title.Text = fmt.Sprintf("ω = %g, σ = %g, r = %g, Initial impact at (φ = %g, v = %g)", 
+		params.ForcingFrequency, params.ObstacleOffset, params.CoefficientOfRestitution, phi, v)
+	p.X.Label.Text = "φ"
+	p.Y.Label.Text = "v"
+
+	p.X.Max = 1.0
+
+	// Draw a grid behind the data
+	p.Add(plotter.NewGrid())
+
+	// Make a scatter plotter and set its style.
+	s, err := plotter.NewScatter(scatterData)
+	if err != nil {
+		panic(err)
+	}
+	s.GlyphStyle.Color = color.RGBA{R: 0, B: 0, A: 255}
+	s.GlyphStyle.Radius = 0.5
+	
+	p.Add(s)
+
+	// Save the plot to a PNG file.
+	scale := font.Length(8)
+	if err := p.Save(scale*vg.Inch, scale*vg.Inch, "scatter.png"); err != nil {
+		panic(err)
 	}
 }

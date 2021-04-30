@@ -2,12 +2,15 @@ package parameters
 
 //  parameters which define a 1-d impact oscillator system with no damping between impacts
 
-import ("fmt")
+import (
+	"fmt"
+"math")
 
 type Parameters struct {
 	ForcingFrequency float64
 	CoefficientOfRestitution float64
 	ObstacleOffset float64
+	Gamma float64
 	MaximumPeriods uint // maximum forcing periods to detect impact
 }
 
@@ -87,6 +90,6 @@ func NewParameters(frequency float64, offset float64, r float64, maxPeriods uint
 	if i > 0 {
 		return nil, errorList
 	} else {
-		return &Parameters{ForcingFrequency: frequency, ObstacleOffset: offset, CoefficientOfRestitution: r, MaximumPeriods: maxPeriods}, errorList
+		return &Parameters{ForcingFrequency: frequency, ObstacleOffset: offset, CoefficientOfRestitution: r, MaximumPeriods: maxPeriods, Gamma: 1.0/(1.0 - math.Pow(frequency, 2))}, errorList
 	}
 }

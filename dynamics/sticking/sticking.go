@@ -81,7 +81,7 @@ func (sticking Sticking) releaseTime(time float64) float64 {
 	return sticking.Converter.ForwardToPhase(time, sticking.PhaseOut)
 }
 
-func (sticking Sticking) checkImpact(impact impact.Impact) *ReleaseImpact {
+func (sticking Sticking) CheckImpact(impact impact.Impact) *ReleaseImpact {
 
 	if (impact.Velocity == 0 && sticking.phaseSticks(impact.Phase) && !sticking.always()) {
 		return &ReleaseImpact{NewImpact: true, Impact: *sticking.Generator(sticking.releaseTime(impact.Time), 0.0)}

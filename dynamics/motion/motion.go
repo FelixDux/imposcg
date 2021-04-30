@@ -62,11 +62,10 @@ type MotionBetweenImpacts struct {
 	sticking sticking.Sticking
 	search SearchParameters
 	offset float64
-	trajectory []StateOfMotion
 
 }
 
-func MotionBetweenImpactsInitialiser(numImpacts uint, parameters parameters.Parameters) (func(impact.Impact) *MotionBetweenImpacts, error) {
+func MotionBetweenImpactsInitialiser(parameters parameters.Parameters) (func(impact.Impact) *MotionBetweenImpacts, error) {
 	sticking, err := sticking.NewSticking(parameters)
 
 	if err != nil {
@@ -74,7 +73,7 @@ func MotionBetweenImpactsInitialiser(numImpacts uint, parameters parameters.Para
 	} else {
 		converter := &sticking.Converter
 		return func(impact impact.Impact) *MotionBetweenImpacts {
-			return &MotionBetweenImpacts{motion: *NewMotionAtTime(parameters, converter, impact), sticking: *sticking, search: DefaultSearchParameters(), offset: parameters.ObstacleOffset, trajectory: make([]StateOfMotion,0,numImpacts)}}, nil
+			return &MotionBetweenImpacts{motion: *NewMotionAtTime(parameters, converter, impact), sticking: *sticking, search: DefaultSearchParameters(), offset: parameters.ObstacleOffset}}, nil
 	}
 }
 

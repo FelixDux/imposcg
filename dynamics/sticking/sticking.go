@@ -73,7 +73,7 @@ func (sticking Sticking) phaseSticks(phase float64) bool {
 	return phase < sticking.PhaseOut || phase >= sticking.PhaseIn
 }
 
-func (sticking Sticking) timeSticks(time float64) bool {
+func (sticking Sticking) TimeSticks(time float64) bool {
 	return sticking.phaseSticks(sticking.Converter.TimeToPhase(time))
 }
 

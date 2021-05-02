@@ -2,9 +2,10 @@ package main
 
 import (
 	// "fmt"
-	// "os"
-	// "log"
+	"os"
+	"log"
 	"strings"
+	"io"
 
 	"github.com/FelixDux/imposcg/dynamics"
 	"github.com/FelixDux/imposcg/dynamics/parameters"
@@ -44,18 +45,17 @@ func doScatter() string {
 }
 
 func HandleScatter(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": doScatter(),
-	})
+	// c.JSON(200, gin.H{
+	// 	"message": doScatter(),
+	// })
 
-	// //w http.ResponseWriter, r *http.Request
-	// img, err := os.Open("example_t500.png")
-    // if err != nil {
-    //     log.Fatal(err) // perhaps handle this nicer
-    // }
-    // defer img.Close()
-    // w.Header().Set("Content-Type", "image/png") // <-- set the content-type header
-    // io.Copy(w, img)
+	img, err := os.Open(doScatter())
+    if err != nil {
+        log.Fatal(err) // perhaps handle this nicer
+    }
+    defer img.Close()
+    c.Writer.Header().Set("Content-Type", "image/png") // <-- set the content-type header
+    io.Copy(c.Writer, img)
 }
 
 func main() {

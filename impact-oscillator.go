@@ -88,6 +88,20 @@ func HandleImpactMapData(c *gin.Context) {
 	})
 }
 
+// Basic structure:
+// / - SPA
+// /api - REST schema
+// /api/v1/iteration/data
+// /api/v1/iteration/image
+// /api/v1/singularity-set/data
+// /api/v1/singularity-set/image
+// /api/v1/doa/data
+// /api/v1/doa/image
+// /api/v1/offset-response/data
+// /api/v1/offset-response/image
+// /api/v1/frequency-response/data
+// /api/v1/frequency-response/image
+
 func main() {
 	r := gin.Default()
 	r.GET("",  HandleImpactMapData)

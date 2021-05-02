@@ -45,9 +45,6 @@ func doScatter() string {
 }
 
 func HandleScatter(c *gin.Context) {
-	// c.JSON(200, gin.H{
-	// 	"message": doScatter(),
-	// })
 
 	img, err := os.Open(doScatter())
     if err != nil {
@@ -58,8 +55,42 @@ func HandleScatter(c *gin.Context) {
     io.Copy(c.Writer, img)
 }
 
+func HandleImpactMapData(c *gin.Context) {
+
+	params, errParams := parameters.NewParameters(2.8, 0.0, 0.8, 100)
+
+	if len(errParams) > 0 {
+	
+		paramMessages := make([]string,len(errParams))
+		for i, err := range(errParams) {
+
+			paramMessages[i] = err.Error()
+
+		}
+
+		c.JSON(500, strings.Join(paramMessages, "\n"))
+		return
+	}
+	
+	impactMap, errMap := dynamics.NewImpactMap(*params)
+
+	if errMap != nil {
+		c.JSON(500,  errMap.Error())
+		return
+	}
+
+	phi := 0.0
+	v := 0.0
+	data := impactMap.IterateFromPoint(phi, v, 1000)
+
+	c.JSON(200, gin.H{
+		"message": data,
+	})
+}
+
 func main() {
 	r := gin.Default()
-	r.GET("",  HandleScatter)
+	r.GET("",  HandleImpactMapData)
+	r.GET("/image",  HandleScatter)
 	r.Run() // listen and serve on 0.0.0.0:8080
 }

@@ -3,14 +3,12 @@ package controllers
 import (
 	"os"
 	"log"
-	"strings"
 	"io"
 
 	"github.com/FelixDux/imposcg/dynamics"
 	"github.com/FelixDux/imposcg/dynamics/parameters"
 	"github.com/FelixDux/imposcg/charts"
 	"github.com/gin-gonic/gin"
-	// "net/http"
 )
 
 func iterationData(parameters *parameters.Parameters, phi float64, v float64, numIterations uint) (*dynamics.IterationResult, string) {
@@ -33,61 +31,38 @@ func iterationImage(parameters *parameters.Parameters, phi float64, v float64, n
 	}
 }
 
-func doScatter() string {
-
-	params, errParams := parameters.NewParameters(4.85, 0.01, 0.8, 100)
-
-	if len(errParams) > 0 {
-	
-		paramMessages := make([]string,len(errParams))
-		for i, err := range(errParams) {
-
-			paramMessages[i] = err.Error()
-
-		}
-
-		return strings.Join(paramMessages, "\n")
-	}
-
-	phi := 0.0
-	v := 0.0
-	
-	return iterationImage(params, phi, v, 1000)
-}
-
 // GET /api/iteration/image
 func GetIterationImage(c *gin.Context) {
+	parameters, errorString := ParametersFromQueryString(c)
 
-	img, err := os.Open(doScatter())
-    if err != nil {
-        log.Print(err)
-		c.JSON(500, err.Error())
-    } else {
-		defer img.Close()
-		c.Writer.Header().Set("Content-Type", "image/png")
-		io.Copy(c.Writer, img)
+	if parameters == nil {
+        log.Print(errorString)
+		c.JSON(500, errorString)
+	} else {
+		img, err := os.Open(iterationImage(parameters, 0.0, 0.0, 1000))
+		if err != nil {
+			log.Print(err)
+			c.JSON(500, err.Error())
+		} else {
+			defer img.Close()
+			c.Writer.Header().Set("Content-Type", "image/png")
+			io.Copy(c.Writer, img)
+		}
 	}
 }
 
 // GET /api/iteration/data
 func GetIterationData(c *gin.Context) {
+	parameters, errorString := ParametersFromQueryString(c)
 
-	params, errParams := parameters.NewParameters(2.8, 0.0, 0.8, 100)
+	if parameters == nil {
+        log.Print(errorString)
+		c.JSON(500, errorString)
 
-	if len(errParams) > 0 {
-	
-		paramMessages := make([]string,len(errParams))
-		for i, err := range(errParams) {
-
-			paramMessages[i] = err.Error()
-
-		}
-
-		c.JSON(500, strings.Join(paramMessages, "\n"))
 		return
 	}
 	
-	impactMap, errMap := dynamics.NewImpactMap(*params)
+	impactMap, errMap := dynamics.NewImpactMap(*parameters)
 
 	if errMap != nil {
 		c.JSON(500,  errMap.Error())
@@ -101,4 +76,9 @@ func GetIterationData(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": data,
 	})
+}
+
+func AddIterationControllers (r *gin.Engine) {
+	r.GET("/api/iteration/data",  GetIterationData)
+	r.GET("/api/iteration/image",  GetIterationImage)
 }

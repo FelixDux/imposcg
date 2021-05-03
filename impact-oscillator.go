@@ -22,7 +22,8 @@ import (
 
 func main() {
 	r := gin.Default()
-	r.GET("/api/iteration/data",  controllers.GetIterationData)
-	r.GET("/api/iteration/image",  controllers.GetIterationImage)
+
+	controllers.AddIterationControllers(r)
+
 	r.Run() // listen and serve on 0.0.0.0:8080
 }

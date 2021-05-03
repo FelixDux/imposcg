@@ -18,7 +18,8 @@ import (
 )
 
 func ImageFile(prefix string) *os.File {
-	file, err := ioutil.TempFile(".", fmt.Sprintf("%s.*.png", prefix))
+	// First argument ensures we use default tmp directory
+	file, err := ioutil.TempFile("", fmt.Sprintf("%s.*.png", prefix))
 	if err != nil {
 		log.Fatal(err)
 	}

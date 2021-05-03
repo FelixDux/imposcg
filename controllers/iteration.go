@@ -10,13 +10,32 @@ import (
 	"github.com/FelixDux/imposcg/dynamics/parameters"
 	"github.com/FelixDux/imposcg/charts"
 	"github.com/gin-gonic/gin"
-
+	// "net/http"
 )
 
+func iterationData(parameters *parameters.Parameters, phi float64, v float64, numIterations uint) (*dynamics.IterationResult, string) {
+	impactMap, errMap := dynamics.NewImpactMap(*parameters)
+
+	if errMap != nil {
+		return nil, errMap.Error()
+	}
+	
+	return impactMap.IterateFromPoint(phi, v, numIterations), ""
+}
+
+func iterationImage(parameters *parameters.Parameters, phi float64, v float64, numIterations uint) string {
+	data, errString := iterationData(parameters, phi, v, numIterations)
+
+	if data == nil {
+		return errString
+	} else {
+		return charts.ImpactMapPlot(*parameters, data.Impacts, phi, v).Name()
+	}
+}
 
 func doScatter() string {
 
-	params, errParams := parameters.NewParameters(2.8, 0.0, 0.8, 100)
+	params, errParams := parameters.NewParameters(4.85, 0.01, 0.8, 100)
 
 	if len(errParams) > 0 {
 	
@@ -29,34 +48,29 @@ func doScatter() string {
 
 		return strings.Join(paramMessages, "\n")
 	}
-	
-	impactMap, errMap := dynamics.NewImpactMap(*params)
-
-	if errMap != nil {
-		return errMap.Error()
-	}
 
 	phi := 0.0
 	v := 0.0
-	data := impactMap.IterateFromPoint(phi, v, 1000)
-
-	return charts.ImpactMapPlot(*params, data.Impacts, phi, v).Name()
+	
+	return iterationImage(params, phi, v, 1000)
 }
 
-// POST /api/iteration/image
-func HandleScatter(c *gin.Context) {
+// GET /api/iteration/image
+func GetIterationImage(c *gin.Context) {
 
 	img, err := os.Open(doScatter())
     if err != nil {
-        log.Fatal(err) // perhaps handle this nicer
-    }
-    defer img.Close()
-    c.Writer.Header().Set("Content-Type", "image/png") // <-- set the content-type header
-    io.Copy(c.Writer, img)
+        log.Print(err)
+		c.JSON(500, err.Error())
+    } else {
+		defer img.Close()
+		c.Writer.Header().Set("Content-Type", "image/png")
+		io.Copy(c.Writer, img)
+	}
 }
 
-// POST /api/iteration/data
-func HandleImpactMapData(c *gin.Context) {
+// GET /api/iteration/data
+func GetIterationData(c *gin.Context) {
 
 	params, errParams := parameters.NewParameters(2.8, 0.0, 0.8, 100)
 

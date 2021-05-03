@@ -3,7 +3,7 @@ module github.com/FelixDux/imposcg
 go 1.16
 
 require (
-	github.com/gin-gonic/gin v1.7.1 // indirect
+	github.com/gin-gonic/gin v1.7.1
 	github.com/go-playground/validator/v10 v10.5.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.5

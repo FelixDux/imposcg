@@ -1,5 +1,7 @@
 package controllers
 
+// TODO: https://github.com/swaggo/gin-swagger to generate REST spec
+
 import (
 	"os"
 	"log"

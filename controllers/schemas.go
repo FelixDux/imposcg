@@ -10,8 +10,8 @@ import (
 )
 
 type ParametersInput struct {
-	frequency float64 `json:"omega" binding:"required"`
-	offset float64 `json:"sigma" binding:"required"`
+	frequency float64 `json:"frequency" binding:"required"`
+	offset float64 `json:"offset" binding:"required"`
 	r float64 `json:"r" binding:"required"`
 	maxPeriods uint `json:"maxPeriods" binding:"required"`
 }
@@ -34,19 +34,16 @@ func (input ParametersInput) ParametersFromInput() (*parameters.Parameters, stri
 	}
 }
 
-func ParametersFromPost(c *gin.Context) (*parameters.Parameters, string) {
+// func float64FromPost(c *gin.Context, name string) (float64, string) {
+// 	return float64FromSource(c, name, c.PostForm)
+// }
 
-  // Validate input
-  var input ParametersInput
-  if err := c.ShouldBindJSON(&input); err != nil {
-    return nil, err.Error()
-  } else {
-	return input.ParametersFromInput()
-  }
-}
+// func float64FromQueryString(c *gin.Context, name string) (float64, string) {
+// 	return float64FromSource(c, name, c.Query)
+// }
 
-func float64FromQueryString(c *gin.Context, name string) (float64, string) {
-	valueString := c.Query(name)
+func float64FromSource(c *gin.Context, name string, source func(string) string) (float64, string) {
+	valueString := source(name)
 	value, err := strconv.ParseFloat(valueString, 64)
 
 	if err != nil {
@@ -56,8 +53,8 @@ func float64FromQueryString(c *gin.Context, name string) (float64, string) {
 	}
 }
 
-func uintFromQueryString(c *gin.Context, name string) (uint, string) {
-	valueString := c.Query(name)
+func uintFromSource(c *gin.Context, name string, source func(string) string) (uint, string) {
+	valueString := source(name)
 	value, err := strconv.ParseUint(valueString, 10, 32)
 
 	if err != nil {
@@ -67,11 +64,22 @@ func uintFromQueryString(c *gin.Context, name string) (uint, string) {
 	}
 }
 
-func ParametersFromQueryString(c *gin.Context) (*parameters.Parameters, string) {
+// func uintFromQueryString(c *gin.Context, name string) (uint, string) {
+// 	valueString := c.Query(name)
+// 	value, err := strconv.ParseUint(valueString, 10, 32)
+
+// 	if err != nil {
+// 		return 0, fmt.Sprintf("Invalid value %s for parameter %s", valueString, name)
+// 	} else {
+// 		return uint(value), ""
+// 	}
+// }
+
+func ParametersFromSource(c *gin.Context, source func(string) string) (*parameters.Parameters, string) {
 	input := ParametersInput{}
 	errorStrings := make([]string, 0, 6)
 
-	frequency, freqErrString := float64FromQueryString(c, "frequency")
+	frequency, freqErrString := float64FromSource(c, "frequency", source)
 
 	if freqErrString != "" {
 		errorStrings = append(errorStrings, freqErrString)
@@ -79,7 +87,7 @@ func ParametersFromQueryString(c *gin.Context) (*parameters.Parameters, string) 
 		input.frequency = frequency
 	}
 
-	offset, freqErrString := float64FromQueryString(c, "offset")
+	offset, freqErrString := float64FromSource(c, "offset", source)
 
 	if freqErrString != "" {
 		errorStrings = append(errorStrings, freqErrString)
@@ -87,7 +95,7 @@ func ParametersFromQueryString(c *gin.Context) (*parameters.Parameters, string) 
 		input.offset = offset
 	}
 
-	r, freqErrString := float64FromQueryString(c, "r")
+	r, freqErrString := float64FromSource(c, "r", source)
 
 	if freqErrString != "" {
 		errorStrings = append(errorStrings, freqErrString)
@@ -95,7 +103,7 @@ func ParametersFromQueryString(c *gin.Context) (*parameters.Parameters, string) 
 		input.r = r
 	}
 
-	maxPeriods, freqErrString := uintFromQueryString(c, "maxPeriods")
+	maxPeriods, freqErrString := uintFromSource(c, "maxPeriods", source)
 
 	if freqErrString != "" {
 		errorStrings = append(errorStrings, freqErrString)
@@ -108,4 +116,12 @@ func ParametersFromQueryString(c *gin.Context) (*parameters.Parameters, string) 
 	} else {
 		return input.ParametersFromInput()
 	}
+}
+
+func ParametersFromQueryString(c *gin.Context) (*parameters.Parameters, string) {
+	return ParametersFromSource(c, c.Query)
+}
+
+func ParametersFromPost(c *gin.Context) (*parameters.Parameters, string) {
+	return ParametersFromSource(c, c.Request.PostFormValue)
 }

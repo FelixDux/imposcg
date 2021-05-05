@@ -1,15 +1,17 @@
 package controllers
 
-// TODO: https://github.com/swaggo/gin-swagger to generate REST spec
+// https://github.com/swaggo/gin-swagger to generate REST spec
+// https://github.com/swaggo/swag#declarative-comments-format
 
 import (
-	"os"
-	"log"
+	"fmt"
 	"io"
+	"log"
+	"os"
 
+	"github.com/FelixDux/imposcg/charts"
 	"github.com/FelixDux/imposcg/dynamics"
 	"github.com/FelixDux/imposcg/dynamics/parameters"
-	"github.com/FelixDux/imposcg/charts"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,18 +35,30 @@ func iterationImage(parameters *parameters.Parameters, phi float64, v float64, n
 	}
 }
 
-// GET /api/iteration/image
-func GetIterationImage(c *gin.Context) {
-	parameters, errorString := ParametersFromQueryString(c)
+// PostIterationImage godoc
+// @Summary Return scatter plot from iterating the impact map
+// @Description Return scatter plot from iterating the impact map for a specified set of parameters
+// @ID post-iteration-image
+// @Accept x-www-form-urlencoded
+// @Produce  png
+// @Param frequency formData number true "Forcing frequency"
+// @Param offset formData number true "Obstacle offset from origin"
+// @Param r formData number true "Coefficient of restitution"
+// @Param maxPeriods formData int true "Number of periods without an impact after which the algorithm will report 'long excursions'"
+// @Success 200 {object} dynamics.IterationResult
+// @Failure 400 {object} string "Invalid parameters"
+// @Router /iteration/image/ [post]
+func PostIterationImage(c *gin.Context) {
+	parameters, errorString := ParametersFromPost(c)
 
 	if parameters == nil {
         log.Print(errorString)
-		c.JSON(500, errorString)
+		c.JSON(400, fmt.Sprintf("Invalid parameters - %s", errorString))
 	} else {
 		img, err := os.Open(iterationImage(parameters, 0.0, 0.0, 1000))
 		if err != nil {
 			log.Print(err)
-			c.JSON(500, err.Error())
+			c.JSON(400, fmt.Sprintf("Failed to complete iteration - %s", err.Error()))
 		} else {
 			defer img.Close()
 			c.Writer.Header().Set("Content-Type", "image/png")
@@ -53,13 +67,25 @@ func GetIterationImage(c *gin.Context) {
 	}
 }
 
-// GET /api/iteration/data
-func GetIterationData(c *gin.Context) {
-	parameters, errorString := ParametersFromQueryString(c)
+// PostIterationData godoc
+// @Summary Return data from iterating the impact map
+// @Description Return data from iterating the impact map for a specified set of parameters
+// @ID post-iteration-data
+// @Accept  x-www-form-urlencoded
+// @Produce  json
+// @Param frequency formData number true "Forcing frequency"
+// @Param offset formData number true "Obstacle offset from origin"
+// @Param r formData number true "Coefficient of restitution"
+// @Param maxPeriods formData int true "Number of periods without an impact after which the algorithm will report 'long excursions'"
+// @Success 200 {object} dynamics.IterationResult
+// @Failure 400 {object} string "Invalid parameters"
+// @Router /iteration/data/ [post]
+func PostIterationData(c *gin.Context) {
+	parameters, errorString := ParametersFromPost(c)
 
 	if parameters == nil {
         log.Print(errorString)
-		c.JSON(500, errorString)
+		c.JSON(400, errorString)
 
 		return
 	}
@@ -67,7 +93,7 @@ func GetIterationData(c *gin.Context) {
 	impactMap, errMap := dynamics.NewImpactMap(*parameters)
 
 	if errMap != nil {
-		c.JSON(500,  errMap.Error())
+		c.JSON(400,  errMap.Error())
 		return
 	}
 
@@ -81,6 +107,7 @@ func GetIterationData(c *gin.Context) {
 }
 
 func AddIterationControllers (r *gin.Engine) {
-	r.GET("/api/iteration/data",  GetIterationData)
-	r.GET("/api/iteration/image",  GetIterationImage)
+	iteration := r.Group("/api/iteration")
+	iteration.POST("/data",  PostIterationData)
+	iteration.POST("/image",  PostIterationImage)
 }

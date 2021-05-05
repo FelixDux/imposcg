@@ -1,0 +1,154 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Analysis and simulation of a simple vibro-impact model developed in Go - principally as a learning exercise",
+        "title": "Impact Oscillator API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api",
+    "paths": {
+        "/iteration/data/": {
+            "post": {
+                "description": "Return data from iterating the impact map for a specified set of parameters",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Return data from iterating the impact map",
+                "operationId": "post-iteration-data",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "Forcing frequency",
+                        "name": "frequency",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Obstacle offset from origin",
+                        "name": "offset",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Coefficient of restitution",
+                        "name": "r",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of periods without an impact after which the algorithm will report 'long excursions'",
+                        "name": "maxPeriods",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dynamics.IterationResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/iteration/image/": {
+            "post": {
+                "description": "Return scatter plot from iterating the impact map for a specified set of parameters",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "image/png"
+                ],
+                "summary": "Return scatter plot from iterating the impact map",
+                "operationId": "post-iteration-image",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "Forcing frequency",
+                        "name": "frequency",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Obstacle offset from origin",
+                        "name": "offset",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Coefficient of restitution",
+                        "name": "r",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of periods without an impact after which the algorithm will report 'long excursions'",
+                        "name": "maxPeriods",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dynamics.IterationResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dynamics.IterationResult": {
+            "type": "object",
+            "properties": {
+                "impacts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/impact.Impact"
+                    }
+                }
+            }
+        },
+        "impact.Impact": {
+            "type": "object",
+            "properties": {
+                "phase": {
+                    "type": "number"
+                },
+                "time": {
+                    "type": "number"
+                },
+                "velocity": {
+                    "type": "number"
+                }
+            }
+        }
+    }
+}

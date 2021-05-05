@@ -1,0 +1,109 @@
+basePath: /api
+definitions:
+  dynamics.IterationResult:
+    properties:
+      impacts:
+        items:
+          $ref: '#/definitions/impact.Impact'
+        type: array
+    type: object
+  impact.Impact:
+    properties:
+      phase:
+        type: number
+      time:
+        type: number
+      velocity:
+        type: number
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Analysis and simulation of a simple vibro-impact model developed in
+    Go - principally as a learning exercise
+  title: Impact Oscillator API
+  version: "1.0"
+paths:
+  /iteration/data/:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Return data from iterating the impact map for a specified set of
+        parameters
+      operationId: post-iteration-data
+      parameters:
+      - description: Forcing frequency
+        in: formData
+        name: frequency
+        required: true
+        type: number
+      - description: Obstacle offset from origin
+        in: formData
+        name: offset
+        required: true
+        type: number
+      - description: Coefficient of restitution
+        in: formData
+        name: r
+        required: true
+        type: number
+      - description: Number of periods without an impact after which the algorithm
+          will report 'long excursions'
+        in: formData
+        name: maxPeriods
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dynamics.IterationResult'
+        "400":
+          description: Invalid parameters
+          schema:
+            type: string
+      summary: Return data from iterating the impact map
+  /iteration/image/:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Return scatter plot from iterating the impact map for a specified
+        set of parameters
+      operationId: post-iteration-image
+      parameters:
+      - description: Forcing frequency
+        in: formData
+        name: frequency
+        required: true
+        type: number
+      - description: Obstacle offset from origin
+        in: formData
+        name: offset
+        required: true
+        type: number
+      - description: Coefficient of restitution
+        in: formData
+        name: r
+        required: true
+        type: number
+      - description: Number of periods without an impact after which the algorithm
+          will report 'long excursions'
+        in: formData
+        name: maxPeriods
+        required: true
+        type: integer
+      produces:
+      - image/png
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dynamics.IterationResult'
+        "400":
+          description: Invalid parameters
+          schema:
+            type: string
+      summary: Return scatter plot from iterating the impact map
+swagger: "2.0"

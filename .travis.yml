@@ -4,10 +4,10 @@ services:
   - docker
 
 before_install:
-  - docker build -t happyleader/imposcg-test -f ./imposc-service/Dockerfile.test .
+  - docker build -t happyleader/imposcg-test -f ./Dockerfile.test .
 
 script:
-  - docker run happyleader/imposc-test go test ./...
+  - docker run happyleader/imposcg-test go test ./...
 
 # after_success:
 #     - docker build -t happyleader/imposc-service ./imposc-service

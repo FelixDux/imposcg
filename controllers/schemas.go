@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	// "log"
 	"fmt"
 	"strings"
 	"strconv"
@@ -10,10 +9,10 @@ import (
 )
 
 type ParametersInput struct {
-	frequency float64 `json:"frequency" binding:"required"`
-	offset float64 `json:"offset" binding:"required"`
-	r float64 `json:"r" binding:"required"`
-	maxPeriods uint `json:"maxPeriods" binding:"required"`
+	frequency float64
+	offset float64
+	r float64 
+	maxPeriods uint
 }
 
 func (input ParametersInput) ParametersFromInput() (*parameters.Parameters, string) {

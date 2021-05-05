@@ -1,0 +1,32 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t happyleader/imposcg-test -f ./imposc-service/Dockerfile.test .
+
+script:
+  - docker run happyleader/imposc-test go test ./...
+
+# after_success:
+#     - docker build -t happyleader/imposc-service ./imposc-service
+#     - docker build -t happyleader/imposc-ui ./imposc-ui
+#     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+#     - docker push happyleader/imposc-service
+#     - docker push happyleader/imposc-ui
+
+# deploy:
+#     provider: lambda
+#     function_name: imposcg # Name of the Lambda being created or updated
+#     edge: true # opt in to dpl v2
+#     on:
+#         branch: main
+#     access_key_id: $AWS_ACCESS_KEY
+#     secret_access_key: $AWS_SECRET_KEY
+#     memory_size: 512 # default is 128
+#     runtime: go1.16.3
+#     zip: .
+#     region: eu-west-2
+#     role: "$IMPOSCG_IAM_ROLE"
+#     module_name: imposc

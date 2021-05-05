@@ -1,0 +1,11 @@
+version: '3'
+services: 
+  tests:
+    stdin_open: true
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    volumes:
+      - .:/usr/src/imposcg
+    command: ["go", "test", "./..."]
+  

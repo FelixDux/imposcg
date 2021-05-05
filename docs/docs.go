@@ -37,6 +37,7 @@ var doc = `{
                 "operationId": "post-iteration-data",
                 "parameters": [
                     {
+                        "minimum": 0,
                         "type": "number",
                         "description": "Forcing frequency",
                         "name": "frequency",
@@ -51,6 +52,8 @@ var doc = `{
                         "required": true
                     },
                     {
+                        "maximum": 1,
+                        "minimum": 0,
                         "type": "number",
                         "description": "Coefficient of restitution",
                         "name": "r",
@@ -59,10 +62,33 @@ var doc = `{
                     },
                     {
                         "type": "integer",
+                        "default": 100,
                         "description": "Number of periods without an impact after which the algorithm will report 'long excursions'",
                         "name": "maxPeriods",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "number",
+                        "default": 0,
+                        "description": "Phase at initial impact",
+                        "name": "phi",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "number",
+                        "default": 0,
+                        "description": "Velocity at initial impact",
+                        "name": "v",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10000,
+                        "description": "Number of iterations of impact map",
+                        "name": "numIterations",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -94,6 +120,7 @@ var doc = `{
                 "operationId": "post-iteration-image",
                 "parameters": [
                     {
+                        "minimum": 0,
                         "type": "number",
                         "description": "Forcing frequency",
                         "name": "frequency",
@@ -108,6 +135,8 @@ var doc = `{
                         "required": true
                     },
                     {
+                        "maximum": 1,
+                        "minimum": 0,
                         "type": "number",
                         "description": "Coefficient of restitution",
                         "name": "r",
@@ -116,10 +145,33 @@ var doc = `{
                     },
                     {
                         "type": "integer",
+                        "default": 100,
                         "description": "Number of periods without an impact after which the algorithm will report 'long excursions'",
                         "name": "maxPeriods",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "number",
+                        "default": 0,
+                        "description": "Phase at initial impact",
+                        "name": "phi",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "number",
+                        "default": 0,
+                        "description": "Velocity at initial impact",
+                        "name": "v",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10000,
+                        "description": "Number of iterations of impact map",
+                        "name": "numIterations",
+                        "in": "formData"
                     }
                 ],
                 "responses": {

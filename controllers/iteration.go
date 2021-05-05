@@ -41,21 +41,24 @@ func iterationImage(parameters *parameters.Parameters, phi float64, v float64, n
 // @ID post-iteration-image
 // @Accept x-www-form-urlencoded
 // @Produce  png
-// @Param frequency formData number true "Forcing frequency"
+// @Param frequency formData number true "Forcing frequency" minimum(0)
 // @Param offset formData number true "Obstacle offset from origin"
-// @Param r formData number true "Coefficient of restitution"
-// @Param maxPeriods formData int true "Number of periods without an impact after which the algorithm will report 'long excursions'"
+// @Param r formData number true "Coefficient of restitution" minimum(0) maximum(1)
+// @Param maxPeriods formData int false "Number of periods without an impact after which the algorithm will report 'long excursions'" default(100)
+// @Param phi formData number true "Phase at initial impact" default(0.0)
+// @Param v formData number true "Velocity at initial impact" default(0.0)
+// @Param numIterations formData int false "Number of iterations of impact map" default(10000)
 // @Success 200 {object} dynamics.IterationResult
 // @Failure 400 {object} string "Invalid parameters"
 // @Router /iteration/image/ [post]
 func PostIterationImage(c *gin.Context) {
-	parameters, errorString := ParametersFromPost(c)
+	inputs, parameters, errorString := IterationInputsFromPost(c)
 
-	if parameters == nil {
+	if parameters == nil || inputs == nil {
         log.Print(errorString)
-		c.JSON(400, fmt.Sprintf("Invalid parameters - %s", errorString))
+		c.JSON(400, errorString)
 	} else {
-		img, err := os.Open(iterationImage(parameters, 0.0, 0.0, 1000))
+		img, err := os.Open(iterationImage(parameters, inputs.phi, inputs.v, inputs.numIterations))
 		if err != nil {
 			log.Print(err)
 			c.JSON(400, fmt.Sprintf("Failed to complete iteration - %s", err.Error()))
@@ -73,17 +76,20 @@ func PostIterationImage(c *gin.Context) {
 // @ID post-iteration-data
 // @Accept  x-www-form-urlencoded
 // @Produce  json
-// @Param frequency formData number true "Forcing frequency"
+// @Param frequency formData number true "Forcing frequency" minimum(0)
 // @Param offset formData number true "Obstacle offset from origin"
-// @Param r formData number true "Coefficient of restitution"
-// @Param maxPeriods formData int true "Number of periods without an impact after which the algorithm will report 'long excursions'"
+// @Param r formData number true "Coefficient of restitution" minimum(0) maximum(1)
+// @Param maxPeriods formData int false "Number of periods without an impact after which the algorithm will report 'long excursions'" default(100)
+// @Param phi formData number true "Phase at initial impact" default(0.0)
+// @Param v formData number true "Velocity at initial impact" default(0.0)
+// @Param numIterations formData int false "Number of iterations of impact map" default(10000)
 // @Success 200 {object} dynamics.IterationResult
 // @Failure 400 {object} string "Invalid parameters"
 // @Router /iteration/data/ [post]
 func PostIterationData(c *gin.Context) {
-	parameters, errorString := ParametersFromPost(c)
+	inputs, parameters, errorString := IterationInputsFromPost(c)
 
-	if parameters == nil {
+	if parameters == nil || inputs == nil {
         log.Print(errorString)
 		c.JSON(400, errorString)
 
@@ -96,10 +102,8 @@ func PostIterationData(c *gin.Context) {
 		c.JSON(400,  errMap.Error())
 		return
 	}
-
-	phi := 0.0
-	v := 0.0
-	data := impactMap.IterateFromPoint(phi, v, 1000)
+	
+	data := impactMap.IterateFromPoint(inputs.phi, inputs.v, inputs.numIterations)
 
 	c.JSON(200, gin.H{
 		"message": data,

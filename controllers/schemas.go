@@ -34,14 +34,6 @@ func (input ParametersInput) ParametersFromInput() (*parameters.Parameters, stri
 	}
 }
 
-// func float64FromPost(c *gin.Context, name string) (float64, string) {
-// 	return float64FromSource(c, name, c.PostForm)
-// }
-
-// func float64FromQueryString(c *gin.Context, name string) (float64, string) {
-// 	return float64FromSource(c, name, c.Query)
-// }
-
 func float64FromSource(c *gin.Context, name string, source func(string) string) (float64, string) {
 	valueString := source(name)
 	value, err := strconv.ParseFloat(valueString, 64)
@@ -63,17 +55,6 @@ func uintFromSource(c *gin.Context, name string, source func(string) string) (ui
 		return uint(value), ""
 	}
 }
-
-// func uintFromQueryString(c *gin.Context, name string) (uint, string) {
-// 	valueString := c.Query(name)
-// 	value, err := strconv.ParseUint(valueString, 10, 32)
-
-// 	if err != nil {
-// 		return 0, fmt.Sprintf("Invalid value %s for parameter %s", valueString, name)
-// 	} else {
-// 		return uint(value), ""
-// 	}
-// }
 
 func ParametersFromSource(c *gin.Context, source func(string) string) (*parameters.Parameters, string) {
 	input := ParametersInput{}
@@ -124,4 +105,51 @@ func ParametersFromQueryString(c *gin.Context) (*parameters.Parameters, string) 
 
 func ParametersFromPost(c *gin.Context) (*parameters.Parameters, string) {
 	return ParametersFromSource(c, c.Request.PostFormValue)
+}
+
+type IterationInputs struct {
+	phi float64
+	v float64
+	numIterations uint
+}
+
+func IterationInputsFromSource(c *gin.Context, source func(string) string) (*IterationInputs, *parameters.Parameters, string) {
+	input := IterationInputs{}
+	errorStrings := make([]string, 0, 6)
+
+	phi, freqErrString := float64FromSource(c, "phi", source)
+
+	if freqErrString != "" {
+		errorStrings = append(errorStrings, freqErrString)
+	} else {
+		input.phi = phi
+	}
+
+	v, freqErrString := float64FromSource(c, "v", source)
+
+	if freqErrString != "" {
+		errorStrings = append(errorStrings, freqErrString)
+	} else {
+		input.v = v
+	}
+
+	numIterations, freqErrString := uintFromSource(c, "numIterations", source)
+
+	if freqErrString != "" {
+		errorStrings = append(errorStrings, freqErrString)
+	} else {
+		input.numIterations = numIterations
+	}
+
+	if len(errorStrings) > 0 {
+		return nil, nil, strings.Join(errorStrings, "\n")
+	} else {
+		parameters, paramErrors := ParametersFromSource(c, source)
+
+		return &input, parameters, paramErrors
+	}
+}
+
+func IterationInputsFromPost(c *gin.Context) (*IterationInputs, *parameters.Parameters, string) {
+	return IterationInputsFromSource(c, c.Request.PostFormValue)
 }

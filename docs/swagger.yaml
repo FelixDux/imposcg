@@ -34,6 +34,7 @@ paths:
       parameters:
       - description: Forcing frequency
         in: formData
+        minimum: 0
         name: frequency
         required: true
         type: number
@@ -44,14 +45,33 @@ paths:
         type: number
       - description: Coefficient of restitution
         in: formData
+        maximum: 1
+        minimum: 0
         name: r
         required: true
         type: number
-      - description: Number of periods without an impact after which the algorithm
+      - default: 100
+        description: Number of periods without an impact after which the algorithm
           will report 'long excursions'
         in: formData
         name: maxPeriods
+        type: integer
+      - default: 0
+        description: Phase at initial impact
+        in: formData
+        name: phi
         required: true
+        type: number
+      - default: 0
+        description: Velocity at initial impact
+        in: formData
+        name: v
+        required: true
+        type: number
+      - default: 10000
+        description: Number of iterations of impact map
+        in: formData
+        name: numIterations
         type: integer
       produces:
       - application/json
@@ -75,6 +95,7 @@ paths:
       parameters:
       - description: Forcing frequency
         in: formData
+        minimum: 0
         name: frequency
         required: true
         type: number
@@ -85,14 +106,33 @@ paths:
         type: number
       - description: Coefficient of restitution
         in: formData
+        maximum: 1
+        minimum: 0
         name: r
         required: true
         type: number
-      - description: Number of periods without an impact after which the algorithm
+      - default: 100
+        description: Number of periods without an impact after which the algorithm
           will report 'long excursions'
         in: formData
         name: maxPeriods
+        type: integer
+      - default: 0
+        description: Phase at initial impact
+        in: formData
+        name: phi
         required: true
+        type: number
+      - default: 0
+        description: Velocity at initial impact
+        in: formData
+        name: v
+        required: true
+        type: number
+      - default: 10000
+        description: Number of iterations of impact map
+        in: formData
+        name: numIterations
         type: integer
       produces:
       - image/png

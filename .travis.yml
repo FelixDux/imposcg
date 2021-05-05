@@ -30,3 +30,5 @@ script:
 #     region: eu-west-2
 #     role: "$IMPOSCG_IAM_ROLE"
 #     module_name: imposc
+
+# https://learn.hashicorp.com/tutorials/terraform/lambda-api-gateway

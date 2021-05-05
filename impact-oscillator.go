@@ -29,12 +29,17 @@ import (
 // /api/frequency-response/data
 // /api/frequency-response/image
 
-func main() {
+func setupServer() *gin.Engine {
+
 	r := gin.Default()
 
 	controllers.AddIterationControllers(r)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	r.Run() // listen and serve on 0.0.0.0:8080
+	return r
+}
+
+func main() {
+	setupServer().Run() // listen and serve on 0.0.0.0:8080
 }

@@ -77,3 +77,39 @@ func TestApiRoutes(t *testing.T) {
     }
 
 }
+
+func TestApiErrors(t *testing.T) {
+
+    ts := httptest.NewServer(setupServer())
+    // Shut down the server and block until all requests have gone through
+    defer ts.Close()
+
+    IterationFails := [] struct {
+        endpoint string
+        statusCode int
+        formData url.Values
+    }{
+        {"iteration/data", 400, url.Values{"frequency": {"-2.8"}, "offset": {"0"}, "r": {"0.8"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
+        {"iteration/data", 400, url.Values{"frequency": {"2.8"}, "offset": {"0"}, "r": {"1.8"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
+        {"iteration/data", 400, url.Values{"frequency": {"1"}, "offset": {"0"}, "r": {"0.8"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
+        {"iteration/data", 400, url.Values{"frequency": {"2.8"}, "offset": {"0"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
+        {"iteration/image", 400, url.Values{"frequency": {"-2.8"}, "offset": {"0"}, "r": {"0.8"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
+        {"iteration/image", 400, url.Values{"frequency": {"2.8"}, "offset": {"0"}, "r": {"1.8"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
+        {"iteration/image", 400, url.Values{"frequency": {"1"}, "offset": {"0"}, "r": {"0.8"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
+        {"iteration/image", 400, url.Values{"frequency": {"2.8"}, "offset": {"0"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
+    }
+
+	for _, data := range IterationFails {
+            resp, err := http.PostForm(fmt.Sprintf("%s/api/%s", ts.URL, data.endpoint), 
+            data.formData)
+
+        if err != nil {
+            t.Fatalf("Expected no error, got %v", err)
+        }
+
+        if resp.StatusCode != data.statusCode {
+            t.Fatalf("Expected status code %v, got %v", data.statusCode, resp.StatusCode)
+        }
+    }
+
+}

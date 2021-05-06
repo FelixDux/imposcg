@@ -47,12 +47,12 @@ func TestApiRoutes(t *testing.T) {
         contentType string
         formData url.Values
     }{
-        {"data", "application/json; charset=utf-8", url.Values{"frequency": {"2.8"}, "offset": {"0"}, "r": {"0.8"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
-        {"image", "image/png", url.Values{"frequency": {"2.8"}, "offset": {"0"}, "r": {"0.8"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
+        {"iteration/data", "application/json; charset=utf-8", url.Values{"frequency": {"2.8"}, "offset": {"0"}, "r": {"0.8"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
+        {"iteration/image", "image/png", url.Values{"frequency": {"2.8"}, "offset": {"0"}, "r": {"0.8"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
     }
 
 	for _, data := range IterationTests {
-            resp, err := http.PostForm(fmt.Sprintf("%s/api/iteration/%s", ts.URL, data.endpoint), 
+            resp, err := http.PostForm(fmt.Sprintf("%s/api/%s", ts.URL, data.endpoint), 
             data.formData)
 
         if err != nil {

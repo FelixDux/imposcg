@@ -189,6 +189,73 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/singularity-set/image/": {
+            "post": {
+                "description": "Return scatter plot of impacts which map to zero velocity impacts for a specified set of parameters",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "image/png"
+                ],
+                "summary": "Return scatter plot of impacts which map to zero velocity impacts for a specified set of parameters",
+                "operationId": "post-singularity-set-image",
+                "parameters": [
+                    {
+                        "minimum": 0,
+                        "type": "number",
+                        "description": "Forcing frequency",
+                        "name": "frequency",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Obstacle offset from origin",
+                        "name": "offset",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "maximum": 1,
+                        "minimum": 0,
+                        "type": "number",
+                        "description": "Coefficient of restitution",
+                        "name": "r",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 100,
+                        "description": "Number of periods without an impact after which the algorithm will report 'long excursions'",
+                        "name": "maxPeriods",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10000,
+                        "description": "Number of iterations of impact map",
+                        "name": "numPoints",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dynamics.IterationResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

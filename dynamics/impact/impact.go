@@ -62,3 +62,23 @@ var defaultImpactComparer = ImpactComparer(1e-3, 1e-3)
 func (impact Impact) almostEqual(other Impact) bool {
 	return impact.almostEqualAltOpt(other, defaultImpactComparer)
 }
+
+func (impact Impact) dualImpact(coefficientOfRestitution float64) Impact {
+	// Returns the dual of an impact. If an impact is the image of a zero-velocity impact, then
+	// its dual is the pre-image of the same zero-velocity impact. This is only well-defined for
+	// non-zero coefficient of restitution. For the zero-restitution case, all impacts behave like
+	// zero-velocity impacts anyway.
+
+	if coefficientOfRestitution > 0.0 {
+		return Impact{Phase: 1.0 - impact.Phase, Time: -impact.Time, Velocity: impact.Velocity / coefficientOfRestitution}
+	} else {
+		return Impact{Phase: 1.0 - impact.Phase, Time: -impact.Time, Velocity: 0.0}
+	}
+}
+
+func DualMaker(coefficientOfRestitution float64) func(Impact) Impact {
+	return func(i Impact) Impact {
+		return i.dualImpact(coefficientOfRestitution)
+	}
+}
+

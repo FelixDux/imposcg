@@ -34,6 +34,7 @@ func setupServer() *gin.Engine {
 	r := gin.Default()
 
 	controllers.AddIterationControllers(r)
+	controllers.AddSingularitySetControllers(r)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

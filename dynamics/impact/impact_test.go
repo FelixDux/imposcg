@@ -37,3 +37,31 @@ func TestImpactEqualityDefault(t *testing.T) {
 	checkEqual(impact1, impact5, true)
 	
 }
+
+func TestImpactDual(t *testing.T) {
+	converter, _ := forcingphase.NewPhaseConverter(2.0)
+
+	generator := ImpactGenerator(*converter)
+
+	impact := *generator(0.3, 1.2)
+
+	tests := []struct {
+		r float64
+		expectedV float64
+	}{
+		{r: 0.8, expectedV: impact.Velocity/0.8},
+		{r: 0.0, expectedV: 0.0},
+	}
+
+	for _, test := range(tests) {
+		dual := impact.dualImpact(test.r)
+
+		if dual.Phase != 1.0 - impact.Phase {
+			t.Errorf("Incorrect dual phase %+v for phase %+v", dual.Phase, impact.Phase)
+		}
+
+		if dual.Velocity != test.expectedV {
+			t.Errorf("Incorrect dual phase %+v for phase %+v", dual.Velocity, test.expectedV)
+		} 
+	}
+}

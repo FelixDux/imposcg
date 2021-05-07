@@ -146,4 +146,54 @@ paths:
           schema:
             type: string
       summary: Return scatter plot from iterating the impact map
+  /singularity-set/image/:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Return scatter plot of impacts which map to zero velocity impacts
+        for a specified set of parameters
+      operationId: post-singularity-set-image
+      parameters:
+      - description: Forcing frequency
+        in: formData
+        minimum: 0
+        name: frequency
+        required: true
+        type: number
+      - description: Obstacle offset from origin
+        in: formData
+        name: offset
+        required: true
+        type: number
+      - description: Coefficient of restitution
+        in: formData
+        maximum: 1
+        minimum: 0
+        name: r
+        required: true
+        type: number
+      - default: 100
+        description: Number of periods without an impact after which the algorithm
+          will report 'long excursions'
+        in: formData
+        name: maxPeriods
+        type: integer
+      - default: 10000
+        description: Number of iterations of impact map
+        in: formData
+        name: numPoints
+        type: integer
+      produces:
+      - image/png
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dynamics.IterationResult'
+        "400":
+          description: Invalid parameters
+          schema:
+            type: string
+      summary: Return scatter plot of impacts which map to zero velocity impacts for
+        a specified set of parameters
 swagger: "2.0"

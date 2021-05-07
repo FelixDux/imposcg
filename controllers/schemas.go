@@ -152,3 +152,26 @@ func IterationInputsFromSource(c *gin.Context, source func(string) string) (*Ite
 func IterationInputsFromPost(c *gin.Context) (*IterationInputs, *parameters.Parameters, string) {
 	return IterationInputsFromSource(c, c.Request.PostFormValue)
 }
+
+func SingularitySetInputsFromSource(c *gin.Context, source func(string) string) (uint, *parameters.Parameters, string) {
+	
+	errorStrings := make([]string, 0, 4)
+
+	numPoints, errString := uintFromSource(c, "numPoints", source)
+
+	if errString != "" {
+		errorStrings = append(errorStrings, errString)
+	}
+
+	if len(errorStrings) > 0 {
+		return 0, nil, strings.Join(errorStrings, "\n")
+	} else {
+		parameters, paramErrors := ParametersFromSource(c, source)
+
+		return numPoints, parameters, paramErrors
+	}
+}
+
+func SingularitySetInputsFromPost(c *gin.Context) (uint, *parameters.Parameters, string) {
+	return SingularitySetInputsFromSource(c, c.Request.PostFormValue)
+}

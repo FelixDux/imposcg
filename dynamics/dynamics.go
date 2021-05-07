@@ -98,6 +98,7 @@ type ImpactMap struct {
 		
 	motion motion.MotionBetweenImpacts
 	chatterChecker ChatterChecker
+	dualMaker func(impact.Impact) impact.Impact
 }
 
 func NewImpactMap(parameters parameters.Parameters) (*ImpactMap, error) {
@@ -113,7 +114,7 @@ func NewImpactMap(parameters parameters.Parameters) (*ImpactMap, error) {
 		return nil, errChatter
 	}
 
-	return &ImpactMap{motion: *motion, chatterChecker: *chatterChecker}, nil
+	return &ImpactMap{motion: *motion, chatterChecker: *chatterChecker, dualMaker: impact.DualMaker(parameters.CoefficientOfRestitution)}, nil
 }
 
 func (impactMap ImpactMap) GenerateImpact(Time float64, Velocity float64) *impact.Impact {
@@ -165,12 +166,13 @@ func (impactMap ImpactMap) IterateFromPoint(phi float64, v float64, numIteration
 }
 
 // Generate a singularity set
-func (impactMap ImpactMap) SingularitySet(numPoints uint) []impact.Impact {
+func (impactMap ImpactMap) SingularitySet(numPoints uint) ([]impact.Impact, []impact.Impact) {
 	if numPoints == 0 {
 		numPoints = 1
 	}
 
-	impacts := make([]impact.Impact, 0, numPoints)
+	singularitySet := make([]impact.Impact, 0, numPoints)
+	dual := make([]impact.Impact, 0, numPoints)
 
 	deltaTime := impactMap.chatterChecker.sticking.Converter.Period/float64(numPoints)
 
@@ -180,11 +182,13 @@ func (impactMap ImpactMap) SingularitySet(numPoints uint) []impact.Impact {
 		impactResult := impactMap.apply(*impactMap.GenerateImpact(startingTime, 0))
 
 		if impactResult.FoundImpact {
-			impacts = append(impacts, impactResult.impact)
+			dual = append(dual, impactResult.impact)
+
+			singularitySet = append(singularitySet, impactMap.dualMaker(impactResult.impact))
 		}
 
 		startingTime += deltaTime
 	}
 
-	return impacts
+	return singularitySet, dual
 }

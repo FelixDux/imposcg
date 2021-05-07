@@ -49,6 +49,8 @@ func TestApiRoutes(t *testing.T) {
     }{
         {"iteration/data", "application/json; charset=utf-8", url.Values{"frequency": {"2.8"}, "offset": {"0"}, "r": {"0.8"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
         {"iteration/image", "image/png", url.Values{"frequency": {"2.8"}, "offset": {"0"}, "r": {"0.8"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
+        // {"singularity-set/data", "application/json; charset=utf-8", url.Values{"frequency": {"2.8"}, "offset": {"0"}, "r": {"0.8"}, "maxPeriods": {"100"}, "numPoints": {"100"}}},
+        {"singularity-set/image", "image/png", url.Values{"frequency": {"2.8"}, "offset": {"0"}, "r": {"0.8"}, "maxPeriods": {"100"}, "numPoints": {"100"}}},
     }
 
 	for _, data := range IterationTests {
@@ -97,6 +99,7 @@ func TestApiErrors(t *testing.T) {
         {"iteration/image", 400, url.Values{"frequency": {"2.8"}, "offset": {"0"}, "r": {"1.8"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
         {"iteration/image", 400, url.Values{"frequency": {"1"}, "offset": {"0"}, "r": {"0.8"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
         {"iteration/image", 400, url.Values{"frequency": {"2.8"}, "offset": {"0"}, "maxPeriods": {"100"}, "phi": {"0"}, "v": {"0"}, "numIterations": {"100"}}},
+        {"singularity-set/image", 400, url.Values{"frequency": {"-2.8"}, "offset": {"0"}, "r": {"0.8"}, "maxPeriods": {"100"}, "numPoints": {"100"}}},
     }
 
 	for _, data := range IterationFails {

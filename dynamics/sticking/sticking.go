@@ -23,14 +23,14 @@ func NewSticking(parameters parameters.Parameters) (*Sticking, error) {
 	var phaseIn float64
 	var phaseOut float64
 
-	if (1 <= parameters.ObstacleOffset) {
+	if (1.0 <= parameters.ObstacleOffset) {
 		// No sticking
-		phaseIn = 0
-		phaseOut = 0
-	} else if -1 >= parameters.ObstacleOffset || parameters.ForcingFrequency == 0 {
+		phaseIn = 0.0
+		phaseOut = 0.0
+	} else if -1.0 >= parameters.ObstacleOffset || parameters.ForcingFrequency == 0.0 {
 		// Sticking for all phases
-		phaseIn = 1
-		phaseOut = 0
+		phaseIn = 1.0
+		phaseOut = 0.0
 	} else { 
 		converter, err := forcingphase.NewPhaseConverter(parameters.ForcingFrequency)
 
@@ -38,10 +38,10 @@ func NewSticking(parameters parameters.Parameters) (*Sticking, error) {
 
 			// (OK to divide by.ForcingFrequency because zero case trapped above)
 			angle := math.Acos(parameters.ObstacleOffset) 
-			phase1 := angle/parameters.ForcingFrequency 
-			phase2 := (2 * math.Pi - angle)/parameters.ForcingFrequency
+			phase1 := converter.TimeToPhase(angle/parameters.ForcingFrequency) 
+			phase2 := 1.0 - phase1
 
-			if (math.Sin(angle) < 0) {
+			if (math.Sin(angle) < 0.0) {
 				phaseIn = phase1
 				phaseOut = phase2
 			} else {
@@ -83,7 +83,7 @@ func (sticking Sticking) releaseTime(time float64) float64 {
 
 func (sticking Sticking) CheckImpact(impact impact.Impact) *ReleaseImpact {
 
-	if (impact.Velocity == 0 && sticking.phaseSticks(impact.Phase) && !sticking.always()) {
+	if (impact.Velocity == 0.0 && sticking.phaseSticks(impact.Phase) && !sticking.always()) {
 		return &ReleaseImpact{NewImpact: true, Impact: *sticking.Generator(sticking.releaseTime(impact.Time), 0.0)}
 	} else {
 		return &ReleaseImpact{NewImpact: false, Impact: impact}

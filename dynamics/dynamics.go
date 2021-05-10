@@ -174,12 +174,15 @@ func (impactMap ImpactMap) SingularitySet(numPoints uint) ([]impact.Impact, []im
 	singularitySet := make([]impact.Impact, 0, numPoints)
 	dual := make([]impact.Impact, 0, numPoints)
 
-	deltaTime := impactMap.chatterChecker.sticking.Converter.Period/float64(numPoints)
+	converter := impactMap.chatterChecker.sticking.Converter
 
-	startingTime := 0.0
+	startingTime := converter.Period * impactMap.chatterChecker.sticking.PhaseOut
+	endingTime := converter.Period * impactMap.chatterChecker.sticking.PhaseIn
+
+	deltaTime := (endingTime - startingTime)/float64(numPoints)
 
 	for i := uint(0); i < numPoints; i++ {
-		impactResult := impactMap.apply(*impactMap.GenerateImpact(startingTime, 0))
+		impactResult := impactMap.apply(*impactMap.GenerateImpact(startingTime, 0.0))
 
 		if impactResult.FoundImpact {
 			dual = append(dual, impactResult.impact)

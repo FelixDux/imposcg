@@ -34,14 +34,29 @@ func (phaseTicks) Ticks(min, max float64) []plot.Tick {
 	return []plot.Tick{{Label: "0", Value: min}, {Label: "π/ω", Value: 0.5*(max-min)}, {Label: "2π/ω", Value: max}}
 }
 
-func ScatterPlot(parameters parameters.Parameters, impactData []impact.Impact, info string) *os.File {
-
+func ScatterPlotter(priority int, impactData []impact.Impact) *plotter.Scatter {
 	scatterData := make(plotter.XYs, len(impactData))
 
 	for i, point := range(impactData) {
 		scatterData[i].X = point.Phase
 		scatterData[i].Y = point.Velocity
 	}
+
+	// Make a scatter plotter and set its style.
+	s, err := plotter.NewScatter(scatterData)
+	if err != nil {
+		panic(err)
+	}
+
+	colorLevel := uint8(priority*25)
+
+	s.GlyphStyle.Color = color.RGBA{R: colorLevel, B: colorLevel, A: 255}
+	s.GlyphStyle.Radius = 0.5
+
+	return s
+}
+
+func ScatterPlot(parameters parameters.Parameters, impactData [][]impact.Impact, info string) *os.File {
 
 	// Create a new plot, set its title and
 	// axis labels.
@@ -56,16 +71,13 @@ func ScatterPlot(parameters parameters.Parameters, impactData []impact.Impact, i
 	p.X.Max = 1.0
 
 	p.X.Tick.Marker = phaseTicks{}
-
-	// Make a scatter plotter and set its style.
-	s, err := plotter.NewScatter(scatterData)
-	if err != nil {
-		panic(err)
-	}
-	s.GlyphStyle.Color = color.RGBA{R: 0, B: 0, A: 255}
-	s.GlyphStyle.Radius = 0.5
 	
-	p.Add(s)
+	for i, data := range (impactData) {
+
+		s := ScatterPlotter(i, data)
+
+		p.Add(s)
+	}
 
 	// Save the plot to a PNG file.
 	imageFile := ImageFile("scatter")
@@ -78,6 +90,6 @@ func ScatterPlot(parameters parameters.Parameters, impactData []impact.Impact, i
 }
 
 
-func ImpactMapPlot(parameters parameters.Parameters, impactData []impact.Impact, phi, v float64) *os.File {
+func ImpactMapPlot(parameters parameters.Parameters, impactData [][]impact.Impact, phi, v float64) *os.File {
 	return ScatterPlot(parameters, impactData, fmt.Sprintf("Initial impact at (φ = %g, v = %g)", phi, v))
 }

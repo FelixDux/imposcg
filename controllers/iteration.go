@@ -12,6 +12,7 @@ import (
 	"github.com/FelixDux/imposcg/charts"
 	"github.com/FelixDux/imposcg/dynamics"
 	"github.com/FelixDux/imposcg/dynamics/parameters"
+	"github.com/FelixDux/imposcg/dynamics/impact"
 	"github.com/gin-gonic/gin"
 )
 
@@ -31,7 +32,7 @@ func iterationImage(parameters *parameters.Parameters, phi float64, v float64, n
 	if data == nil {
 		return errString
 	} else {
-		return charts.ImpactMapPlot(*parameters, data.Impacts, phi, v).Name()
+		return charts.ImpactMapPlot(*parameters, [][]impact.Impact{data.Impacts}, phi, v).Name()
 	}
 }
 

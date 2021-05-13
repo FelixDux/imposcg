@@ -15,29 +15,29 @@ import (
 )
 
 type SingularitySetResult struct {
-	singularity []impact.Impact
-	dual []impact.Impact
+	Singularity []impact.Impact `json:"singularity"`
+	Dual []impact.Impact `json:"dual"`
 }
 
 func singularitySetData(parameters *parameters.Parameters, numPoints uint) (*SingularitySetResult, string) {
 	impactMap, errMap := dynamics.NewImpactMap(*parameters)
 
 	if errMap != nil {
-		return &SingularitySetResult{singularity: nil, dual: nil}, errMap.Error()
+		return &SingularitySetResult{Singularity: nil, Dual: nil}, errMap.Error()
 	}
 
 	singularity, dual := impactMap.SingularitySet(numPoints)
 	
-	return &SingularitySetResult{singularity: singularity, dual: dual}, ""
+	return &SingularitySetResult{Singularity: singularity, Dual: dual}, ""
 }
 
 func singularitySetImage(parameters *parameters.Parameters, numPoints uint) string {
 	result, errString := singularitySetData(parameters, numPoints)
 
-	if result.singularity == nil || result.dual == nil {
+	if result.Singularity == nil || result.Dual == nil {
 		return errString
 	} else {
-		return charts.ImpactMapPlot(*parameters, [][]impact.Impact{result.singularity,result.dual}, 0.0, 0.0).Name()
+		return charts.ImpactMapPlot(*parameters, [][]impact.Impact{result.Singularity,result.Dual}, 0.0, 0.0).Name()
 	}
 }
 
@@ -89,7 +89,6 @@ func PostSingularitySetImage(c *gin.Context) {
 // @Failure 400 {object} string "Invalid parameters"
 // @Router /singularity-set/data/ [post]
 func PostSingularitySetData(c *gin.Context) {
-	// TODO: NOT YET WORKING
 	numPoints, parameters, errorString := SingularitySetInputsFromPost(c)
 
 	if parameters == nil || len(errorString) > 0 {
@@ -98,7 +97,7 @@ func PostSingularitySetData(c *gin.Context) {
 	} else {
 		result, errString := singularitySetData(parameters, numPoints)
 
-		if result.singularity == nil || result.dual == nil {
+		if result.Singularity == nil || result.Dual == nil {
 			log.Print(errString)
 			c.JSON(400, fmt.Sprintf("Failed to complete singularity set - %s", errString))
 		} else {

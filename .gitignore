@@ -13,8 +13,10 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+.terraform/
 
 # Outputs
 *.png
 imposcg
 __debug_bin
+*.zip

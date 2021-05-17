@@ -1,34 +1,32 @@
-language: generic
-sudo: required
-services:
-  - docker
+language: go
 
-before_install:
-  - docker build -t happyleader/imposcg-test -f ./Dockerfile.dev .
+go:
+  - 1.16.3
+
+sudo: required
+
+before_script:
+  - go vet ./...
+  - env GOOS=linux ARCH=amd64 go build ./impact-oscillator.go
 
 script:
-  - docker run happyleader/imposcg-test go test ./...
+  - go test ./...
 
-# after_success:
-#     - docker build -t happyleader/imposc-service ./imposc-service
-#     - docker build -t happyleader/imposc-ui ./imposc-ui
-#     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-#     - docker push happyleader/imposc-service
-#     - docker push happyleader/imposc-ui
+after_success:
+  - zip -r imposcg.zip .
+  - mkdir lambda-build 2>/dev/null
+  - mv imposcg.zip lambda-build
 
-# deploy:
-#     provider: lambda
-#     function_name: imposcg # Name of the Lambda being created or updated
-#     edge: true # opt in to dpl v2
-#     on:
-#         branch: main
-#     access_key_id: $AWS_ACCESS_KEY
-#     secret_access_key: $AWS_SECRET_KEY
-#     memory_size: 512 # default is 128
-#     runtime: go1.16.3
-#     zip: .
-#     region: eu-west-2
-#     role: "$IMPOSCG_IAM_ROLE"
-#     module_name: imposc
+before_deploy:
+  - cd $TRAVIS_BUILD_DIR
 
-# https://learn.hashicorp.com/tutorials/terraform/lambda-api-gateway
+deploy:
+  on:
+    branch: main
+  provider: s3
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+  bucket: felixdux-imposcg-lambda
+  skip_cleanup: true
+  region: $AWS_DEFAULT_REGION
+  local_dir: ./lambda-build

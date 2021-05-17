@@ -1,13 +1,9 @@
 # imposcg
 Analysis and simulation of a simple vibro-impact model developed in Go - principally as a learning exercise
 
-# aws-tf branch
-
-## Aim
+## Reading
 
 Use terraform to deploy to AWS lambda.
-
-## Reading
 
 - https://learn.hashicorp.com/tutorials/terraform/lambda-api-gateway
 - https://github.com/awslabs/aws-lambda-go-api-proxy

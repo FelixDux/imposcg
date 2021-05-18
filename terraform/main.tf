@@ -44,6 +44,37 @@ EOF
 
 }
 
+# Add AWSLambdaBasicExecutionRole managed policy to role so that the function can write logs to CloudWatch
+
+resource "aws_iam_policy" "lambda_logs" {
+  name        = "lambda_logs"
+  description = "Write to CloudWatch"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_attach" {
+  role       = aws_iam_role.lambda_exec.name
+  policy_arn = aws_iam_policy.lambda_logs.arn
+}
+
+# Grant API gateway permission to invoke
+
 resource "aws_lambda_permission" "apigw" {
    statement_id  = "AllowAPIGatewayInvoke"
    action        = "lambda:InvokeFunction"

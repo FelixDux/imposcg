@@ -15,7 +15,7 @@ resource "aws_lambda_function" "imposc" {
    s3_bucket = "felixdux-imposcg-lambda"
    s3_key    = "imposcg.zip"
 
-   handler = "impact-oscillator"
+   handler = "impact-oscillator.go"
    runtime = "go1.x"
 
    role = aws_iam_role.lambda_exec.arn

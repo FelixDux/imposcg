@@ -14,6 +14,7 @@ script:
 
 after_success:
   - zip -r imposcg.zip .
+  - zipinfo imposcg.zip
   - mkdir lambda-build 2>/dev/null
   - mv imposcg.zip lambda-build
 

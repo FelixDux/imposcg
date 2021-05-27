@@ -73,20 +73,23 @@ func init() {
 	server = setupServer()
 
 	if OnAwsLambda() {
+		log.Printf("Creating lambda adapter")
 		ginLambda = ginadapter.New(server)
 	}
 }
 
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	// If no name is provided in the HTTP request body, throw an error
-	log.Printf("Handling request: %v+", req)
+	log.Printf("Handling lambda request: %v+", req)
 	return ginLambda.ProxyWithContext(ctx, req)
 }
 
 func main() {
 	if OnAwsLambda() {
+		log.Printf("Starting lambda adapter")
 		lambda.Start(Handler)
 	} else {
+		log.Printf("Starting Gin server")
 		server.Run()
 	}
 }

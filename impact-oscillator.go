@@ -51,6 +51,10 @@ func EnvIsTruthy(env string) bool {
 	}
 }
 
+func LogEnv(env string) {
+	log.Printf("%s = %s", env, os.Getenv(env))
+}
+
 func OnAwsLambda() bool {
 	return EnvIsTruthy("AWS_LAMBDA_RUNTIME_API") && EnvIsTruthy("_LAMBDA_SERVER_PORT")
 }
@@ -75,6 +79,9 @@ func init() {
 	if OnAwsLambda() {
 		log.Printf("Creating lambda adapter")
 		ginLambda = ginadapter.New(server)
+	} else {
+		LogEnv("AWS_LAMBDA_RUNTIME_API")
+		LogEnv("_LAMBDA_SERVER_PORT")
 	}
 }
 

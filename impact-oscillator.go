@@ -79,6 +79,7 @@ func init() {
 
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	// If no name is provided in the HTTP request body, throw an error
+	log.Printf("Handling request: %v+", req)
 	return ginLambda.ProxyWithContext(ctx, req)
 }
 

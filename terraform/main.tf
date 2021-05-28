@@ -14,6 +14,7 @@ resource "aws_lambda_function" "imposc" {
 
    s3_bucket = "felixdux-imposcg-lambda"
    s3_key    = "imposcg.zip"
+   source_code_hash  = "${base64sha256(file("imposcg.zip"))}"
 
    handler = "impact-oscillator"
    runtime = "go1.x"

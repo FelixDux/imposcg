@@ -16,7 +16,7 @@ after_success:
   - zip -r imposcg.zip .
   - zipinfo imposcg.zip
   - mkdir lambda-build 2>/dev/null
-  - mv imposcg.zip lambda-build
+  - mv imposcg.zip lambda-build/$(bash ./terraform/get_source_archive.bash)
 
 before_deploy:
   - cd $TRAVIS_BUILD_DIR

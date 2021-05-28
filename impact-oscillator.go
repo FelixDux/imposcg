@@ -2,21 +2,25 @@ package main
 
 import (
 	"github.com/FelixDux/imposcg/controllers"
+	"github.com/FelixDux/imposcg/docs"
 	"github.com/gin-gonic/gin"
 
+	"context"
+	"log"
 	"os"
 	"strings"
-	"log"
-	"context"
 
+	_ "github.com/FelixDux/imposcg/docs"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	_ "github.com/FelixDux/imposcg/docs"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/awslabs/aws-lambda-go-api-proxy/gin"
 )
+
+// https://github.com/swaggo/swag/issues/367
+// https://github.com/swaggo/swag#how-to-use-it-with-gin
 
 // @title Impact Oscillator API
 // @version 1.0
@@ -51,6 +55,20 @@ func EnvIsTruthy(env string) bool {
 	}
 }
 
+func EnvOrDefault(env string, defaultValue string) string {
+	value := strings.TrimSpace(os.Getenv(env))
+
+	if len(value) > 0 {
+		return value
+	} else {
+		return defaultValue
+	}
+}
+
+func SwagHost() string {
+	return EnvOrDefault("SWAG_HOST", "localhost:8080")
+}
+
 func LogEnv(env string) {
 	log.Printf("%s = %s", env, os.Getenv(env))
 }
@@ -73,7 +91,13 @@ func setupServer() *gin.Engine {
 	return r
 }
 
+func SetupSwagInfo() {
+	docs.SwaggerInfo.Host = SwagHost()
+}
+
 func init() {
+	SetupSwagInfo()
+	
 	server = setupServer()
 
 	if OnAwsLambda() {

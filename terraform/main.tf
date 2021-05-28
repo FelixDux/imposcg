@@ -9,12 +9,23 @@ resource "aws_s3_bucket" "staging" {
     force_destroy = "true"
 }
 
+variable source_archive {
+  type        = string
+  default     = "imposcg.zip"
+  description = "S3 key for the zip file containing the source code"
+}
+
 resource "aws_lambda_function" "imposc" {
    function_name = "ImpactOscillator"
 
    s3_bucket = "felixdux-imposcg-lambda"
-   s3_key    = "imposcg.zip"
-   source_code_hash  = "${base64sha256(file("imposcg.zip"))}"
+   s3_key    = var.source_archive
+
+   environment {
+     variables = {
+       SWAG_HOST = "${aws_api_gateway_rest_api.imposc.id}/test" #"https://hnahb2qhm2.execute-api.eu-west-2.amazonaws.com/test/"
+     }
+   }
 
    handler = "impact-oscillator"
    runtime = "go1.x"

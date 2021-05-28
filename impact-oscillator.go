@@ -25,7 +25,6 @@ import (
 // @title Impact Oscillator API
 // @version 1.0
 // @description Analysis and simulation of a simple vibro-impact model developed in Go - principally as a learning exercise
-// @host localhost:8080
 // @BasePath /api
 
 // Basic structure:

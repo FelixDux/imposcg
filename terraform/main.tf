@@ -23,7 +23,7 @@ resource "aws_lambda_function" "imposc" {
 
    environment {
      variables = {
-       SWAG_HOST = "${aws_api_gateway_rest_api.imposc.id}.execute-api.eu-west-2.amazonaws.com/test/" #"https://hnahb2qhm2.execute-api.eu-west-2.amazonaws.com/test/"
+       SWAG_HOST = "${aws_api_gateway_rest_api.imposc.id}.execute-api.eu-west-2.amazonaws.com/test" #"https://hnahb2qhm2.execute-api.eu-west-2.amazonaws.com/test/"
      }
    }
 

@@ -1,6 +1,11 @@
 # imposcg
 Analysis and simulation of a simple vibro-impact model developed in Go - principally as a learning exercise
 
+- https://hnahb2qhm2.execute-api.eu-west-2.amazonaws.com/test/api/iteration/image
+- https://hnahb2qhm2.execute-api.eu-west-2.amazonaws.com/test/api/singularity-set/image
+- https://hnahb2qhm2.execute-api.eu-west-2.amazonaws.com/test/swagger/index.html
+
+
 ## Reading
 
 Use terraform to deploy to AWS lambda.

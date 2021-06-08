@@ -22,12 +22,22 @@ before_deploy:
   - cd $TRAVIS_BUILD_DIR
 
 deploy:
-  on:
-    branch: main
-  provider: s3
-  access_key_id: $AWS_ACCESS_KEY_ID
-  secret_access_key: $AWS_SECRET_ACCESS_KEY
-  bucket: felixdux-imposcg-lambda
-  skip_cleanup: true
-  region: $AWS_DEFAULT_REGION
-  local_dir: ./lambda-build
+  - on:
+      branch: main
+    provider: s3
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: felixdux-imposcg-lambda
+    skip_cleanup: true
+    region: $AWS_DEFAULT_REGION
+    local_dir: ./lambda-build
+  - on:
+      branch: main
+    provider: lamdba
+    function_name: "ImpactOscillator"
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    region: $AWS_DEFAULT_REGION
+    role: $IMPOSCG_IAM_ROLE
+    handler_name: "impact-oscillator"
+    runtime: "go1.x"

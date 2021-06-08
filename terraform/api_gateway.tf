@@ -1,6 +1,7 @@
 resource "aws_api_gateway_rest_api" "imposc" {
   name        = "ImpactOscillator"
   description = "Serverless Impact Oscillator Model"
+  binary_media_types = ["image/png"]
 }
 
 # Route all incoming requests

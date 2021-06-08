@@ -39,5 +39,6 @@ deploy:
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     region: $AWS_DEFAULT_REGION
     role: $IMPOSCG_IAM_ROLE
-    handler_name: "impact-oscillator"
+    module_name: "impact-oscillator"
+    handler_name: "main"
     runtime: "go1.x"

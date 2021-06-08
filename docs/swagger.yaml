@@ -16,7 +16,6 @@ definitions:
       velocity:
         type: number
     type: object
-host: localhost:8080
 info:
   contact: {}
   description: Analysis and simulation of a simple vibro-impact model developed in

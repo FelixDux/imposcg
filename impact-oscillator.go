@@ -89,7 +89,7 @@ func setupServer() *gin.Engine {
 
 	r.GET("/", func (c *gin.Context)  {
 		c.JSON(200, gin.H{
-			"message": "watch this space",
+			"message": "watch this space ...",
 		})
 	})
 

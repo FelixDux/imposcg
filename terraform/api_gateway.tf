@@ -55,6 +55,6 @@ resource "aws_api_gateway_deployment" "impact-oscillator" {
    ]
 
    rest_api_id = aws_api_gateway_rest_api.imposc.id
-   # stage_name  = "test"
+   stage_name  = "default"
 }
 

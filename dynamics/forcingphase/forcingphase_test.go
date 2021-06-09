@@ -106,14 +106,14 @@ func TestForwardToPhase(t *testing.T) {
             new_small_phase := conv.TimeToPhase(new_small)
 
             if !cmp.Equal(phase, new_small_phase, opt) {
-                t.Errorf("Phase converter with frequency %g runs forward time %g from phase %g to phase %g, expected %g", f, time_delta, phase, new_small_phase, phase)
+                t.Errorf("Phase converter with frequency %g runs forward time %g from time %g to phase %g, expected %g", f, time_delta, small_time, new_small_phase, phase)
             }
 
             new_big := conv.ForwardToPhase(time_delta + big_time, phase)
             new_big_phase := conv.TimeToPhase(new_big)
 
             if !cmp.Equal(phase, new_big_phase, opt) {
-                t.Errorf("Phase converter with frequency %g runs forward time %g from phase %g to phase %g, expected %g", f, time_delta, phase, new_big_phase, phase)
+                t.Errorf("Phase converter with frequency %g runs forward time %g from time %g to phase %g, expected %g", f, time_delta, big_time, new_big_phase, phase)
             }
         }
     }

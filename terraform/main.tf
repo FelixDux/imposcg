@@ -27,7 +27,7 @@ resource "aws_lambda_function" "imposc" {
      }
    }
 
-   handler = "impact-oscillator"
+   handler = "impact.oscillator"
    runtime = "go1.x"
 
    role = aws_iam_role.lambda_exec.arn

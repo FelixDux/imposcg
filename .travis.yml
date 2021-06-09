@@ -7,7 +7,7 @@ sudo: required
 
 before_script:
   - go vet ./...
-  - env GOOS=linux ARCH=amd64 go build ./impact-oscillator.go
+  - env GOOS=linux ARCH=amd64 go build ./impact.oscillator.go
 
 script:
   - go test ./...

@@ -21,11 +21,11 @@ resource "aws_lambda_function" "imposc" {
    s3_bucket = "felixdux-imposcg-lambda"
    s3_key    = var.source_archive
 
-   environment {
-     variables = {
-       SWAG_HOST = "${aws_api_gateway_rest_api.imposc.id}.execute-api.eu-west-2.amazonaws.com/default"
-     }
-   }
+  #  environment {
+  #    variables = {
+  #      SWAG_HOST = "${aws_apigatewayv2_api.imposc.id}.execute-api.eu-west-2.amazonaws.com"
+  #    }
+  #  }
 
    handler = "impact.oscillator"
    runtime = "go1.x"
@@ -95,7 +95,7 @@ resource "aws_lambda_permission" "apigw" {
 
    # The "/*/*" portion grants access from any method on any resource
    # within the API Gateway REST API.
-   source_arn = "${aws_api_gateway_rest_api.imposc.execution_arn}/*/*"
+   source_arn = "${aws_apigatewayv2_api.imposc.execution_arn}/*/*"
 }
 
 

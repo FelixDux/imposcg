@@ -1,11 +1,11 @@
 version: '3'
 services: 
-  service:
+  tests:
     stdin_open: true
     build:
       context: .
+      dockerfile: Dockerfile.dev
     volumes:
       - .:/usr/src/imposcg
-    ports:
-      - 8080:8080
+    command: ["go", "test", "./..."]
   

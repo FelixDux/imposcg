@@ -68,8 +68,8 @@ A chapter of my thesis was devoted to a particularly striking instance of 'grazi
 ## Functionality
 The software generates graphical plots of the following:
 
-- Scatter plots of iterated applications of the impact map for a given set of parameter values and initial conditions: https://4nese8424h.execute-api.eu-west-2.amazonaws.com/api/iteration/image
-- Plots of the singularity set on the impact surface: https://4nese8424h.execute-api.eu-west-2.amazonaws.com/api/singularity-set/image
+- Scatter plots of iterated applications of the impact map for a given set of parameter values and initial conditions
+- Plots of the singularity set on the impact surface
 
 Various other interesting plots will come later, time permitting, including:
 

@@ -4,6 +4,7 @@ import (
 	"github.com/FelixDux/imposcg/controllers"
 	"github.com/FelixDux/imposcg/docs"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/contrib/static"
 
 	"context"
 	"log"
@@ -87,9 +88,8 @@ func setupServer() *gin.Engine {
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	r.GET("/", func (c *gin.Context)  {
-		c.String(200, "watch this space ...")
-	})
+	// Serve frontend static files
+	r.Use(static.Serve("/", static.LocalFile("./views", true)))
 
 	return r
 }

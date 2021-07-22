@@ -65,7 +65,7 @@ func EnvOrDefault(env string, defaultValue string) string {
 }
 
 func SwagHost() string {
-	return EnvOrDefault("SWAG_HOST", "localhost:8080")
+	return EnvOrDefault("SWAG_HOST", "")
 }
 
 func LogEnv(env string) {

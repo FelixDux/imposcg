@@ -21,13 +21,6 @@ resource "aws_lambda_function" "imposc" {
    s3_bucket = "felixdux-imposcg-lambda"
    s3_key    = var.source_archive
 
-  # This won't work because it creates a circular reference - need to set up a domain
-  #  environment {
-  #    variables = {
-  #      SWAG_HOST = "${aws_apigatewayv2_api.imposc.id}.execute-api.eu-west-2.amazonaws.com"
-  #    }
-  #  }
-
    handler = "impact.oscillator"
    runtime = "go1.x"
 

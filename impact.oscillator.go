@@ -88,9 +88,7 @@ func setupServer() *gin.Engine {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.GET("/", func (c *gin.Context)  {
-		c.JSON(200, gin.H{
-			"message": "watch this space ...",
-		})
+		c.String(200, "watch this space ...")
 	})
 
 	return r

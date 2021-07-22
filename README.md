@@ -1,9 +1,9 @@
 # imposcg
 Analysis and simulation of a simple vibro-impact model developed in Go - principally as a learning exercise
 
-- https://hnahb2qhm2.execute-api.eu-west-2.amazonaws.com/default/api/iteration/image
-- https://hnahb2qhm2.execute-api.eu-west-2.amazonaws.com/default/api/singularity-set/image
-- https://hnahb2qhm2.execute-api.eu-west-2.amazonaws.com/default/swagger/index.html
+- https://4nese8424h.execute-api.eu-west-2.amazonaws.com/api/iteration/image
+- https://4nese8424h.execute-api.eu-west-2.amazonaws.com/api/singularity-set/image
+- https://4nese8424h.execute-api.eu-west-2.amazonaws.com/swagger/index.html
 
 
 ## Reading

@@ -48,7 +48,7 @@ func iterationImage(parameters *parameters.Parameters, phi float64, v float64, n
 // @Param maxPeriods formData int false "Number of periods without an impact after which the algorithm will report 'long excursions'" default(100)
 // @Param phi formData number true "Phase at initial impact" default(0.0)
 // @Param v formData number true "Velocity at initial impact" default(0.0)
-// @Param numIterations formData int false "Number of iterations of impact map" default(10000)
+// @Param numIterations formData int false "Number of iterations of impact map" default(5000)
 // @Success 200 {object} dynamics.IterationResult
 // @Failure 400 {object} string "Invalid parameters"
 // @Router /iteration/image/ [post]
@@ -83,7 +83,7 @@ func PostIterationImage(c *gin.Context) {
 // @Param maxPeriods formData int false "Number of periods without an impact after which the algorithm will report 'long excursions'" default(100)
 // @Param phi formData number true "Phase at initial impact" default(0.0)
 // @Param v formData number true "Velocity at initial impact" default(0.0)
-// @Param numIterations formData int false "Number of iterations of impact map" default(10000)
+// @Param numIterations formData int false "Number of iterations of impact map" default(5000)
 // @Success 200 {object} dynamics.IterationResult
 // @Failure 400 {object} string "Invalid parameters"
 // @Router /iteration/data/ [post]

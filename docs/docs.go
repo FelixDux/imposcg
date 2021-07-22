@@ -85,7 +85,7 @@ var doc = `{
                     },
                     {
                         "type": "integer",
-                        "default": 10000,
+                        "default": 5000,
                         "description": "Number of iterations of impact map",
                         "name": "numIterations",
                         "in": "formData"
@@ -168,7 +168,7 @@ var doc = `{
                     },
                     {
                         "type": "integer",
-                        "default": 10000,
+                        "default": 5000,
                         "description": "Number of iterations of impact map",
                         "name": "numIterations",
                         "in": "formData"
@@ -235,7 +235,7 @@ var doc = `{
                     },
                     {
                         "type": "integer",
-                        "default": 10000,
+                        "default": 5000,
                         "description": "Number of impacts to map",
                         "name": "numPoints",
                         "in": "formData"
@@ -302,7 +302,7 @@ var doc = `{
                     },
                     {
                         "type": "integer",
-                        "default": 10000,
+                        "default": 5000,
                         "description": "Number of impacts to map",
                         "name": "numPoints",
                         "in": "formData"

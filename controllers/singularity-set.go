@@ -51,7 +51,7 @@ func singularitySetImage(parameters *parameters.Parameters, numPoints uint) stri
 // @Param offset formData number true "Obstacle offset from origin"
 // @Param r formData number true "Coefficient of restitution" minimum(0) maximum(1)
 // @Param maxPeriods formData int false "Number of periods without an impact after which the algorithm will report 'long excursions'" default(100)
-// @Param numPoints formData int false "Number of impacts to map" default(10000)
+// @Param numPoints formData int false "Number of impacts to map" default(5000)
 // @Success 200 {object} dynamics.IterationResult
 // @Failure 400 {object} string "Invalid parameters"
 // @Router /singularity-set/image/ [post]
@@ -84,7 +84,7 @@ func PostSingularitySetImage(c *gin.Context) {
 // @Param offset formData number true "Obstacle offset from origin"
 // @Param r formData number true "Coefficient of restitution" minimum(0) maximum(1)
 // @Param maxPeriods formData int false "Number of periods without an impact after which the algorithm will report 'long excursions'" default(100)
-// @Param numPoints formData int false "Number of impacts to map" default(10000)
+// @Param numPoints formData int false "Number of impacts to map" default(5000)
 // @Success 200 {object} dynamics.IterationResult
 // @Failure 400 {object} string "Invalid parameters"
 // @Router /singularity-set/data/ [post]

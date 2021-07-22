@@ -67,7 +67,7 @@ paths:
         name: v
         required: true
         type: number
-      - default: 10000
+      - default: 5000
         description: Number of iterations of impact map
         in: formData
         name: numIterations
@@ -128,7 +128,7 @@ paths:
         name: v
         required: true
         type: number
-      - default: 10000
+      - default: 5000
         description: Number of iterations of impact map
         in: formData
         name: numIterations
@@ -177,7 +177,7 @@ paths:
         in: formData
         name: maxPeriods
         type: integer
-      - default: 10000
+      - default: 5000
         description: Number of impacts to map
         in: formData
         name: numPoints
@@ -227,7 +227,7 @@ paths:
         in: formData
         name: maxPeriods
         type: integer
-      - default: 10000
+      - default: 5000
         description: Number of impacts to map
         in: formData
         name: numPoints

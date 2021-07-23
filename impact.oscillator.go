@@ -30,6 +30,7 @@ import (
 
 // Basic structure:
 // / - SPA
+// /js - index.js
 // /swagger/*any - REST schema
 // /api/iteration/data
 // /api/iteration/image
@@ -89,7 +90,8 @@ func setupServer() *gin.Engine {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Serve frontend static files
-	r.Use(static.Serve("/", static.LocalFile("./views", true)))
+	r.Use(static.Serve("/", static.LocalFile("./static", true)))
+	r.Static("/js/", "./static/js/")
 
 	return r
 }

@@ -36,10 +36,26 @@ function extractFromAPIInfo(data, key, callback) {
     }
 }
 
+class PathBuilder {
+    constructor(apiData) {
+        this.basePath = "";
+
+        const setter = path => this.basePath = path.replace(/\"/g, "");
+
+        extractFromAPIInfo(apiData, 'basePath', setter);
+    }
+
+    fullPath(path) {
+        return `${this.basePath}${path}`;
+    }
+}
+
 function processAPIInfo(data) {
     const renderer = rendererForNode("main");
 
-    extractFromAPIInfo(data, 'basePath', renderer);
+    const pathBuilder = new PathBuilder(data);
+
+    renderer(pathBuilder.fullPath("/some/path/or/other"))
 }
 
 

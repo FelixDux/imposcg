@@ -19,12 +19,6 @@ function getAPIInfo(callback) {
     .catch(error => callback(message2JSON(`${error}`)));
 }
 
-// class NavBarInfo {
-//     constructor(apiData) {
-//         this
-//     }
-// }
-
 function extractFromAPIInfo(data, key, callback) {
     if (key in data) {
         info = data[key];
@@ -36,7 +30,7 @@ function extractFromAPIInfo(data, key, callback) {
     }
 }
 
-class PathBuilder {
+class FullPathBuilder {
     constructor(apiData) {
         this.basePath = "";
 
@@ -50,12 +44,54 @@ class PathBuilder {
     }
 }
 
+class Parameter {
+    constructor(apiData) {
+    }
+}
+
+class Path {
+    constructor(path, apiData) {
+        this.path = path;
+        this.description = "";
+
+        // this.parameters = [];
+
+        function processPostData(data) {
+            this.description = data['description'];
+        }
+
+        extractFromAPIInfo(apiData, 'post', processPostData);
+    }
+
+    html() {
+        return `${this.path}: ${this.description}`;
+    }
+}
+
+class PathsHolder {
+    constructor(apiData) {
+        this.paths = [];
+
+        const setter = paths => {data=JSON.parse(paths); data.forEach(k, v => {
+            this.paths.push(new Path(k, v));
+        });};
+
+        extractFromAPIInfo(apiData, 'paths', setter);
+    }
+
+    // html() {
+    //     return `<ul>${this.paths.reduce(prev, curr => prev.concat("<li>", curr))}</ul>`;
+    // }
+}
+
 function processAPIInfo(data) {
     const renderer = rendererForNode("main");
 
-    const pathBuilder = new PathBuilder(data);
+    const pathBuilder = new FullPathBuilder(data);
 
-    renderer(pathBuilder.fullPath("/some/path/or/other"))
+    const paths = new PathsHolder(data);
+
+    // renderer(`<p>${pathBuilder.fullPath("/some/path/or/other")}</p>${paths.html()}`);
 }
 
 

@@ -6,21 +6,18 @@ function message2JSON(message) {
     return {"message": message};
 }
 
-class DocInfo {
-    constructor(data) {
-        this.json = data;
-    }
+function getAPIInfo(callback) {
+    let theJson = message2JSON("Watch this space ...");
 
-    put(nodeId) {
-        render(nodeId, JSON.stringify(this.json));
-    }
+    fetch("/swagger/doc.json")
+    .then(response => response.json())
+    .then(data => callback(data))
+    .catch(error => callback(message2JSON(`${error}`)));
 }
 
-const info = fetch("/swagger/doc.json")
-.then(response => response.json())
-.then(data => new DocInfo(data))
-.catch(error => new DocInfo(message2JSON(`${error}`)))
-;
+function processAPIInfo(data) {
+    render("main", JSON.stringify(data));
+}
 
-info.put("main");
 
+getAPIInfo(processAPIInfo);

@@ -1,6 +1,10 @@
-var render = function (nodeId, content) {
+function render(nodeId, content) {
     document.getElementById(nodeId).innerHTML = `${content}`;
 };
+
+function rendererForNode(nodeId) {
+    return content => render(nodeId, content);
+}
 
 function message2JSON(message) {
     return {"message": message};
@@ -15,8 +19,27 @@ function getAPIInfo(callback) {
     .catch(error => callback(message2JSON(`${error}`)));
 }
 
+// class NavBarInfo {
+//     constructor(apiData) {
+//         this
+//     }
+// }
+
+function extractFromAPIInfo(data, key, callback) {
+    if (key in data) {
+        info = data[key];
+        callback(JSON.stringify(info));
+    }
+    else
+    {
+        callback(`Could not find key '${key}' in JSON data`);
+    }
+}
+
 function processAPIInfo(data) {
-    render("main", JSON.stringify(data));
+    const renderer = rendererForNode("main");
+
+    extractFromAPIInfo(data, 'basePath', renderer);
 }
 
 

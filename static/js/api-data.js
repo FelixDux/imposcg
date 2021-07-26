@@ -2,8 +2,7 @@ function getAPIInfo(callback) {
     fetch("/swagger/doc.json")
     .then(response => response.json())
     .then(data => callback(data))
-    // .catch(error => callback(message2JSONObject(`${error}`)))
-    ;
+    .catch(error => console.log(`${error}`));
 }
 
 function extractFromAPIInfo(data, key, callback) {
@@ -12,7 +11,7 @@ function extractFromAPIInfo(data, key, callback) {
     }
     else
     {
-        callback(message2JSONObject(`Could not find key '${key}' in ${JSON.stringify(data)}`));
+        console.log(`Could not find key '${key}' in ${JSON.stringify(data)}`);
     }
 }
 
@@ -21,10 +20,6 @@ function kvObjectToPairs(obj) {
     const values = Object.values(obj);
 
     return keys.map( (element, index) => [element, values[index]] );
-}
-
-function message2JSONObject(message) {
-    return {"message": message};
 }
 
 export {getAPIInfo, extractFromAPIInfo, kvObjectToPairs};

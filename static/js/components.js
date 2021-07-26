@@ -20,8 +20,6 @@ class Parameter {
         this.name = apiData['name'];
         this.description = apiData['description'];
 
-        console.log(apiData);
-
         Object.keys(apiData).forEach( key => {
             if (!['name', 'description', 'in'].includes(key)) {
                 this.attributes.push({name: key, value: apiData[key]});

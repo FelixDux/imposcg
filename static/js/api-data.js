@@ -2,7 +2,8 @@ function getAPIInfo(callback) {
     fetch("/swagger/doc.json")
     .then(response => response.json())
     .then(data => callback(data))
-    .catch(error => callback(message2JSONObject(`${error}`)));
+    // .catch(error => callback(message2JSONObject(`${error}`)))
+    ;
 }
 
 function extractFromAPIInfo(data, key, callback) {

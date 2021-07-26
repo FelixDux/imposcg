@@ -1,6 +1,6 @@
 import {rendererForNode} from './render.js';
 import{getAPIInfo} from './api-data.js';
-import {FullPathBuilder, Parameter, Path, PathsHolder} from './components.js';
+import {FullPathBuilder, Path, PathsHolder} from './components.js';
 
 function processAPIInfo(data) {
     const renderer = rendererForNode("main");

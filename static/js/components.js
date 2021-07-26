@@ -2,7 +2,6 @@ import{extractFromAPIInfo, kvObjectToPairs} from './api-data.js';
 
 class FullPathBuilder {
     constructor(apiData) {
-        this.basePath = "";
 
         const setter = path => this.basePath = JSON.stringify(path).replace(/\"/g, "");
 
@@ -16,6 +15,26 @@ class FullPathBuilder {
 
 class Parameter {
     constructor(apiData) {
+        this.attributes = [];
+
+        this.name = apiData['name'];
+        this.description = apiData['description'];
+
+        console.log(apiData);
+
+        Object.keys(apiData).forEach( key => {
+            if (!['name', 'description', 'in'].includes(key)) {
+                this.attributes.push({name: key, value: apiData[key]});
+            }
+        })
+    }
+
+    html() {
+        const attributeList = this.attributes.reduce(
+            (acc, attribute) => `${acc}<li>${attribute.name}: ${attribute.value}`, ''
+        );
+
+        return `${this.name}: ${this.description} <ul>${attributeList}</ul>`;
     }
 }
 
@@ -23,17 +42,23 @@ class Path {
     constructor(path, apiData) {
 
         this.path = path;
-        this.description = "";
 
-        // this.parameters = [];
-
-        const processPostData = data => this.description = data['description'];
+        const processPostData = data => {
+            this.description = data['description'];
+            this.parameters = data['parameters'].map((e, i) => new Parameter(e));
+        };
 
         extractFromAPIInfo(apiData, 'post', processPostData);
     }
 
     html() {
-        return `${this.path}: ${this.description}`;
+
+        const parameterList = this.parameters.reduce(
+            (acc, parameter) => `${acc}<li>${parameter.html()}`,
+            ""
+        );
+
+        return `${this.path}: ${this.description} <ul>${parameterList}</ul>`;
     }
 }
 
@@ -42,7 +67,6 @@ class PathsHolder {
         this.paths = [];
 
         const setter = paths => {const pairs = kvObjectToPairs(paths); pairs.forEach(pair => {
-            console.log(`${pair[0]}: ${pair[1]}`);
             this.paths.push(new Path(pair[0], pair[1]));
         });};
 
@@ -54,4 +78,4 @@ class PathsHolder {
     }
 }
 
-export {FullPathBuilder, Parameter, Path, PathsHolder};
+export {FullPathBuilder, Path, PathsHolder};

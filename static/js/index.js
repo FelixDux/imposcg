@@ -1,6 +1,7 @@
 import {rendererForNode} from './render.js';
 import{getAPIInfo} from './api-data.js';
 import {FullPathBuilder, Header, PathsHolder} from './components.js';
+import {addEventListeners} from './listeners.js'
 
 function processAPIInfo(data) {
     const renderer = rendererForNode("main");
@@ -11,8 +12,13 @@ function processAPIInfo(data) {
 
     const paths = new PathsHolder(data);
 
-    renderer(`<p>${header.html()}</p>${paths.html()}`);
+    renderer(`${header.html()}${paths.html()}`);
 }
 
 
 getAPIInfo(processAPIInfo);
+
+// Wait until the document is ready
+document.addEventListener("DOMContentLoaded", function() { 
+    addEventListeners();
+});

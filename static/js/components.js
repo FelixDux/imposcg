@@ -1,4 +1,7 @@
 import{extractFromAPIInfo, kvObjectToPairs} from './api-data.js';
+import {rendererForNode} from './render.js';
+
+const refreshForm =  rendererForNode('form');
 
 class FullPathBuilder {
     constructor(apiData) {
@@ -43,6 +46,7 @@ class Path {
 
         const processPostData = data => {
             this.summary = data['summary'];
+            this.id = this.summary.replace(/\s/g, "");
             this.description = data['description'];
             this.parameters = data['parameters'].map((e, i) => new Parameter(e));
         };
@@ -50,24 +54,29 @@ class Path {
         extractFromAPIInfo(apiData, 'post', processPostData);
     }
 
+    addListener() {
+        const formContent = this.formHtml();
+        document.getElementById(this.id).addEventListener("click", function () {refreshForm(formContent);});
+    }
+
     navHtml() {
         return `
         <div class="tooltip">
-        <a>
+        <a id='${this.id}'">
         ${this.summary}
         <span class="tooltiptext">${this.description}</span>
         </a>
         </div>`;
     }
 
-    debug() {
+    formHtml() {
 
         const parameterList = this.parameters.reduce(
-            (acc, parameter) => `${acc}<li>${parameter.html()}`,
+            (acc, parameter) => `${acc} ${parameter.html()}`,
             ""
         );
 
-        return `${this.path}: ${this.description} <ul>${parameterList}</ul>`;
+        return `<p>${this.description}</p>${parameterList}`;
     }
 }
 
@@ -85,7 +94,12 @@ class PathsHolder {
     html() {
         return `<div className="topnav">
         ${this.paths.reduce((prev, curr) => prev.concat(curr.navHtml()), "")}
-        </div>`;
+        </div>
+        <div id="form"></div>`;
+    }
+
+    addListeners() {
+        this.paths.forEach(path => path.addListener());
     }
 }
 

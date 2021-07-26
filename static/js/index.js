@@ -11,30 +11,36 @@ function message2JSON(message) {
 }
 
 function getAPIInfo(callback) {
-    let theJson = message2JSON("Watch this space ...");
-
     fetch("/swagger/doc.json")
     .then(response => response.json())
     .then(data => callback(data))
-    .catch(error => callback(message2JSON(`${error}`)));
+    .catch(error => callback(message2JSON(`${error}`)))
+    ;
 }
 
 function extractFromAPIInfo(data, key, callback) {
     if (key in data) {
         info = data[key];
-        callback(JSON.stringify(info));
+        callback(info);
     }
     else
     {
-        callback(`Could not find key '${key}' in JSON data`);
+        callback(message2JSON(`Could not find key '${key}' in JSON data`));
     }
+}
+
+function kvObjectToPairs(obj) {
+    const keys = Object.keys(obj);
+    const values = Object.values(obj);
+
+    return keys.map( (element, index) => [element, values[index]] );
 }
 
 class FullPathBuilder {
     constructor(apiData) {
         this.basePath = "";
 
-        const setter = path => this.basePath = path.replace(/\"/g, "");
+        const setter = path => this.basePath = JSON.stringify(path).replace(/\"/g, "");
 
         extractFromAPIInfo(apiData, 'basePath', setter);
     }
@@ -51,14 +57,13 @@ class Parameter {
 
 class Path {
     constructor(path, apiData) {
+
         this.path = path;
         this.description = "";
 
         // this.parameters = [];
 
-        function processPostData(data) {
-            this.description = data['description'];
-        }
+        const processPostData = data => this.description = data['description'];
 
         extractFromAPIInfo(apiData, 'post', processPostData);
     }
@@ -72,16 +77,16 @@ class PathsHolder {
     constructor(apiData) {
         this.paths = [];
 
-        const setter = paths => {data=JSON.parse(paths); data.forEach(k, v => {
-            this.paths.push(new Path(k, v));
+        const setter = paths => {const pairs = kvObjectToPairs(paths); pairs.forEach(pair => {
+            this.paths.push(new Path(pair[0], pair[1]));
         });};
 
         extractFromAPIInfo(apiData, 'paths', setter);
     }
 
-    // html() {
-    //     return `<ul>${this.paths.reduce(prev, curr => prev.concat("<li>", curr))}</ul>`;
-    // }
+    html() {
+        return `<ul>${this.paths.reduce((prev, curr) => prev.concat("<li>", curr.html()), "")}</ul>`;
+    }
 }
 
 function processAPIInfo(data) {
@@ -91,7 +96,7 @@ function processAPIInfo(data) {
 
     const paths = new PathsHolder(data);
 
-    // renderer(`<p>${pathBuilder.fullPath("/some/path/or/other")}</p>${paths.html()}`);
+    renderer(`<p>${pathBuilder.fullPath("/some/path/or/other")}</p>${paths.html()}`);
 }
 
 

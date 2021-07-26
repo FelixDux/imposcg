@@ -50,11 +50,13 @@ class Path {
         extractFromAPIInfo(apiData, 'post', processPostData);
     }
 
-    html() {
+    navHtml() {
         return `
         <div class="tooltip">
+        <a>
         ${this.summary}
         <span class="tooltiptext">${this.description}</span>
+        </a>
         </div>`;
     }
 
@@ -82,9 +84,29 @@ class PathsHolder {
 
     html() {
         return `<div className="topnav">
-        ${this.paths.reduce((prev, curr) => prev.concat(curr.html()), "")}
+        ${this.paths.reduce((prev, curr) => prev.concat(curr.navHtml()), "")}
         </div>`;
     }
 }
 
-export {FullPathBuilder, Path, PathsHolder};
+class Header {
+    constructor(apiData) {
+        const setter = info => {
+            this.title = info.title;
+            this.version = info.version;
+            this.description = info.description;
+        }
+
+        extractFromAPIInfo(apiData, 'info', setter);
+    }
+
+    html() {
+        return `<header class="imposc-header">
+                    <h1>${this.title}</h1>
+                    <small>Version ${this.version}</small><br>
+                    <small>${this.description}</small>
+                </header>`;
+    }
+}
+
+export {FullPathBuilder, Header, PathsHolder};

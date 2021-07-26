@@ -23,7 +23,7 @@ import (
 // https://github.com/swaggo/swag/issues/367
 // https://github.com/swaggo/swag#how-to-use-it-with-gin
 
-// @title Impact Oscillator API
+// @title Impact Oscillator
 // @version 1.0
 // @description Analysis and simulation of a simple vibro-impact model developed in Go - principally as a learning exercise
 // @BasePath /api

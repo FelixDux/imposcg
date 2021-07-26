@@ -42,6 +42,7 @@ class Path {
         this.path = path;
 
         const processPostData = data => {
+            this.summary = data['summary'];
             this.description = data['description'];
             this.parameters = data['parameters'].map((e, i) => new Parameter(e));
         };
@@ -50,6 +51,14 @@ class Path {
     }
 
     html() {
+        return `
+        <div class="tooltip">
+        ${this.summary}
+        <span class="tooltiptext">${this.description}</span>
+        </div>`;
+    }
+
+    debug() {
 
         const parameterList = this.parameters.reduce(
             (acc, parameter) => `${acc}<li>${parameter.html()}`,
@@ -72,7 +81,9 @@ class PathsHolder {
     }
 
     html() {
-        return `<ul>${this.paths.reduce((prev, curr) => prev.concat("<li>", curr.html()), "")}</ul>`;
+        return `<div className="topnav">
+        ${this.paths.reduce((prev, curr) => prev.concat(curr.html()), "")}
+        </div>`;
     }
 }
 

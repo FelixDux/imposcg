@@ -37,7 +37,7 @@ func iterationImage(parameters *parameters.Parameters, phi float64, v float64, n
 }
 
 // PostIterationImage godoc
-// @Summary Return scatter plot from iterating the impact map
+// @Summary Impact map
 // @Description Return scatter plot from iterating the impact map for a specified set of parameters
 // @ID post-iteration-image
 // @Accept x-www-form-urlencoded
@@ -72,7 +72,7 @@ func PostIterationImage(c *gin.Context) {
 }
 
 // PostIterationData godoc
-// @Summary Return data from iterating the impact map
+// @Summary Impact data
 // @Description Return data from iterating the impact map for a specified set of parameters
 // @ID post-iteration-data
 // @Accept  x-www-form-urlencoded

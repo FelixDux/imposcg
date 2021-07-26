@@ -83,7 +83,7 @@ paths:
           description: Invalid parameters
           schema:
             type: string
-      summary: Return data from iterating the impact map
+      summary: Impact data
   /iteration/image/:
     post:
       consumes:
@@ -144,7 +144,7 @@ paths:
           description: Invalid parameters
           schema:
             type: string
-      summary: Return scatter plot from iterating the impact map
+      summary: Impact map
   /singularity-set/data/:
     post:
       consumes:
@@ -193,8 +193,7 @@ paths:
           description: Invalid parameters
           schema:
             type: string
-      summary: Return impacts which map to and from zero velocity impacts for a specified
-        set of parameters
+      summary: Singularity set data
   /singularity-set/image/:
     post:
       consumes:
@@ -243,6 +242,5 @@ paths:
           description: Invalid parameters
           schema:
             type: string
-      summary: Return scatter plot of impacts which map to and from zero velocity
-        impacts for a specified set of parameters
+      summary: Singularity set
 swagger: "2.0"

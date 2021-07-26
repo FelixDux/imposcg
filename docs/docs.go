@@ -33,7 +33,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Return data from iterating the impact map",
+                "summary": "Impact data",
                 "operationId": "post-iteration-data",
                 "parameters": [
                     {
@@ -116,7 +116,7 @@ var doc = `{
                 "produces": [
                     "image/png"
                 ],
-                "summary": "Return scatter plot from iterating the impact map",
+                "summary": "Impact map",
                 "operationId": "post-iteration-image",
                 "parameters": [
                     {
@@ -199,7 +199,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Return impacts which map to and from zero velocity impacts for a specified set of parameters",
+                "summary": "Singularity set data",
                 "operationId": "post-singularity-set-data",
                 "parameters": [
                     {
@@ -266,7 +266,7 @@ var doc = `{
                 "produces": [
                     "image/png"
                 ],
-                "summary": "Return scatter plot of impacts which map to and from zero velocity impacts for a specified set of parameters",
+                "summary": "Singularity set",
                 "operationId": "post-singularity-set-image",
                 "parameters": [
                     {

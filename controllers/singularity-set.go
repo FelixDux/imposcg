@@ -42,7 +42,7 @@ func singularitySetImage(parameters *parameters.Parameters, numPoints uint) stri
 }
 
 // PostSingularitySetImage godoc
-// @Summary Return scatter plot of impacts which map to and from zero velocity impacts for a specified set of parameters
+// @Summary Singularity set
 // @Description Return scatter plot of impacts which map to and from zero velocity impacts for a specified set of parameters
 // @ID post-singularity-set-image
 // @Accept x-www-form-urlencoded
@@ -75,7 +75,7 @@ func PostSingularitySetImage(c *gin.Context) {
 }
 
 // PostSingularitySetData godoc
-// @Summary Return impacts which map to and from zero velocity impacts for a specified set of parameters
+// @Summary Singularity set data
 // @Description Return impacts which map to and from zero velocity impacts for a specified set of parameters
 // @ID post-singularity-set-data
 // @Accept x-www-form-urlencoded

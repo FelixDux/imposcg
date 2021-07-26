@@ -28,21 +28,6 @@ import (
 // @description Analysis and simulation of a simple vibro-impact model developed in Go - principally as a learning exercise
 // @BasePath /api
 
-// Basic structure:
-// / - SPA
-// /js - index.js
-// /swagger/*any - REST schema
-// /api/iteration/data
-// /api/iteration/image
-// /api/singularity-set/data
-// /api/singularity-set/image
-// /api/doa/data
-// /api/doa/image
-// /api/offset-response/data
-// /api/offset-response/image
-// /api/frequency-response/data
-// /api/frequency-response/image
-
 var server *gin.Engine
 var ginLambda *ginadapter.GinLambda
 

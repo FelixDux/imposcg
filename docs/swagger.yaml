@@ -20,7 +20,7 @@ info:
   contact: {}
   description: Analysis and simulation of a simple vibro-impact model developed in
     Go - principally as a learning exercise
-  title: Impact Oscillator API
+  title: Impact Oscillator
   version: "1.0"
 paths:
   /iteration/data/:

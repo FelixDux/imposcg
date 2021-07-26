@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "description": "Analysis and simulation of a simple vibro-impact model developed in Go - principally as a learning exercise",
-        "title": "Impact Oscillator API",
+        "title": "Impact Oscillator",
         "contact": {},
         "version": "1.0"
     },

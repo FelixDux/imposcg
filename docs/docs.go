@@ -369,7 +369,7 @@ var SwaggerInfo = swaggerInfo{
 	Host:        "",
 	BasePath:    "/api",
 	Schemes:     []string{},
-	Title:       "Impact Oscillator API",
+	Title:       "Impact Oscillator",
 	Description: "Analysis and simulation of a simple vibro-impact model developed in Go - principally as a learning exercise",
 }
 

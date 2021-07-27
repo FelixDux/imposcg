@@ -106,9 +106,7 @@ func PostIterationData(c *gin.Context) {
 	
 	data := impactMap.IterateFromPoint(inputs.phi, inputs.v, inputs.numIterations)
 
-	c.JSON(200, gin.H{
-		"message": data,
-	})
+	c.JSON(200,  data)
 }
 
 func AddIterationControllers (r *gin.Engine) {

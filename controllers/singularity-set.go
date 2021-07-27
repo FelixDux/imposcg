@@ -101,7 +101,7 @@ func PostSingularitySetData(c *gin.Context) {
 			log.Print(errString)
 			c.JSON(400, fmt.Sprintf("Failed to complete singularity set - %s", errString))
 		} else {
-			c.JSON(200, gin.H{"message": result,})
+			c.JSON(200, result)
 		}
 	}
 }

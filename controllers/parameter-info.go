@@ -41,9 +41,7 @@ func GetParameterSymbols(c *gin.Context) {
 		info = info.Add(k, v)
 	}
 
-	c.JSON(200, gin.H{
-		"message": info,
-	})
+	c.JSON(200, info)
 }
 
 func AddParameterInfoControllers(r *gin.Engine) {

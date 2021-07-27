@@ -1,7 +1,30 @@
-import{extractFromAPIInfo, kvObjectToPairs} from './api-data.js';
+import{extractFromAPIInfo, kvObjectToPairs, getParameterSymbols} from './api-data.js';
 import {rendererForNode} from './render.js';
 
 const refreshForm =  rendererForNode('form');
+
+class ParameterSymbols {
+    constructor() {
+        this.symbols = new Map();;
+
+        const setter = data => {
+            data.Symbols.forEach( (e, _) => {
+                this.symbols.set(e.Parameter, e.Symbol);
+            });
+        };
+
+        getParameterSymbols(setter);
+    }
+
+    lookup(parameter) {
+        if (this.symbols.has(parameter)) {
+            return this.symbols.get(parameter);
+        }
+        else {
+            return parameter;
+        }
+    }
+}
 
 class FullPathBuilder {
     constructor(apiData) {
@@ -17,8 +40,11 @@ class FullPathBuilder {
 }
 
 class Parameter {
-    constructor(apiData) {
+    constructor(apiData, symbols) {
         this.attributes = [];
+        this.symbols = symbols;
+
+        console.log(this.symbols);
 
         this.name = apiData['name'];
         this.description = apiData['description'];
@@ -35,12 +61,12 @@ class Parameter {
             (acc, attribute) => `${acc}<li>${attribute.name}: ${attribute.value}`, ''
         );
 
-        return `${this.name}: ${this.description} <ul>${attributeList}</ul>`;
+        return `${this.symbols.lookup(this.name)}: ${this.description} <ul>${attributeList}</ul>`;
     }
 }
 
 class Path {
-    constructor(path, apiData) {
+    constructor(path, apiData, symbols) {
 
         this.path = path;
 
@@ -48,7 +74,7 @@ class Path {
             this.summary = data['summary'];
             this.id = this.summary.replace(/\s/g, "");
             this.description = data['description'];
-            this.parameters = data['parameters'].map((e, i) => new Parameter(e));
+            this.parameters = data['parameters'].map((e, i) => new Parameter(e, symbols));
         };
 
         extractFromAPIInfo(apiData, 'post', processPostData);
@@ -81,12 +107,12 @@ class Path {
 }
 
 class PathsHolder {
-    constructor(apiData) {
+    constructor(apiData, symbols) {
         this.paths = [];
 
         const setter = paths => {const pairs = kvObjectToPairs(paths); pairs.forEach(pair => {
             if ('post' in pair[1]) {
-                this.paths.push(new Path(pair[0], pair[1]))
+                this.paths.push(new Path(pair[0], pair[1], symbols))
             };
         });};
 
@@ -125,4 +151,4 @@ class Header {
     }
 }
 
-export {FullPathBuilder, Header, PathsHolder};
+export {FullPathBuilder, Header, PathsHolder, ParameterSymbols};

@@ -1,9 +1,13 @@
-function getAPIInfo(callback) {
-    fetch("/swagger/doc.json")
+function getFromAPI(path, callback) {
+    fetch(path)
     .then(response => response.json())
     .then(data => callback(data))
     .catch(error => console.log(`${error}`));
 }
+
+const getAPIInfo = callback => getFromAPI("/swagger/doc.json", callback);
+
+const getParameterSymbols = callback => getFromAPI("/api/parameter-info/symbols", callback);
 
 function extractFromAPIInfo(data, key, callback) {
     if (key in data) {
@@ -22,4 +26,4 @@ function kvObjectToPairs(obj) {
     return keys.map( (element, index) => [element, values[index]] );
 }
 
-export {getAPIInfo, extractFromAPIInfo, kvObjectToPairs};
+export {getParameterSymbols, getAPIInfo, extractFromAPIInfo, kvObjectToPairs};

@@ -1,22 +1,27 @@
 import {rendererForNode} from './render.js';
 import{getAPIInfo} from './api-data.js';
-import {FullPathBuilder, Header, PathsHolder} from './components.js';
+import {FullPathBuilder, Header, PathsHolder, ParameterSymbols} from './components.js';
 import {addEventListeners} from './listeners.js'
 
-function processAPIInfo(data) {
-    const renderer = rendererForNode("main");
+function populate() {
+    const symbols = new ParameterSymbols();
 
-    const pathBuilder = new FullPathBuilder(data);
+    function processAPIInfo(data) {
+        const renderer = rendererForNode("main");
 
-    const header = new Header(data);
+        const pathBuilder = new FullPathBuilder(data);
 
-    const paths = new PathsHolder(data);
+        const header = new Header(data);
 
-    renderer(`${header.html()}${paths.html()}`);
+        const paths = new PathsHolder(data, symbols);
+
+        renderer(`${header.html()}${paths.html()}`);
+    }
+
+    getAPIInfo(processAPIInfo);
 }
 
-
-getAPIInfo(processAPIInfo);
+populate();
 
 // Wait until the document is ready
 document.addEventListener("DOMContentLoaded", function() { 

@@ -85,7 +85,9 @@ class PathsHolder {
         this.paths = [];
 
         const setter = paths => {const pairs = kvObjectToPairs(paths); pairs.forEach(pair => {
-            this.paths.push(new Path(pair[0], pair[1]));
+            if ('post' in pair[1]) {
+                this.paths.push(new Path(pair[0], pair[1]))
+            };
         });};
 
         extractFromAPIInfo(apiData, 'paths', setter);

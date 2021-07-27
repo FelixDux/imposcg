@@ -1,5 +1,19 @@
 basePath: /api
 definitions:
+  controllers.ParameterInfo:
+    properties:
+      symbols:
+        items:
+          $ref: '#/definitions/controllers.ParameterSymbol'
+        type: array
+    type: object
+  controllers.ParameterSymbol:
+    properties:
+      parameter:
+        type: string
+      symbol:
+        type: string
+    type: object
   dynamics.IterationResult:
     properties:
       impacts:
@@ -145,6 +159,18 @@ paths:
           schema:
             type: string
       summary: Impact map
+  /parameter-info/symbols/:
+    get:
+      description: Greek symbols to be used for rendering specified parameters
+      operationId: get-parameter-symbols
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.ParameterInfo'
+      summary: Parameter symbols
   /singularity-set/data/:
     post:
       consumes:

@@ -42,11 +42,8 @@ class FullPathBuilder {
 class Parameter {
     constructor(apiData, symbols) {
         this.attributes = [];
-        this.symbols = symbols;
 
-        console.log(this.symbols);
-
-        this.name = apiData['name'];
+        this.name = symbols.lookup(apiData['name']);
         this.description = apiData['description'];
 
         Object.keys(apiData).forEach( key => {
@@ -61,7 +58,7 @@ class Parameter {
             (acc, attribute) => `${acc}<li>${attribute.name}: ${attribute.value}`, ''
         );
 
-        return `${this.symbols.lookup(this.name)}: ${this.description} <ul>${attributeList}</ul>`;
+        return `${this.name}: ${this.description} <ul>${attributeList}</ul>`;
     }
 }
 

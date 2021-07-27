@@ -18,12 +18,12 @@ function populate() {
         renderer(`${header.html()}${paths.html()}`);
     }
 
-    getAPIInfo(processAPIInfo);
+        getAPIInfo(processAPIInfo);
+
+    // Wait until the document is ready
+    document.addEventListener("DOMContentLoaded", function() { 
+        addEventListeners(symbols);
+    });
 }
 
 populate();
-
-// Wait until the document is ready
-document.addEventListener("DOMContentLoaded", function() { 
-    addEventListeners();
-});

@@ -1,16 +1,24 @@
-language: go
+# language: go
 
-go:
-  - 1.16.3
+# go:
+#   - 1.16.3
 
+# sudo: required
+
+# before_script:
+#   - go vet ./...
+#   - env GOOS=linux ARCH=amd64 go build ./impact.oscillator.go
+
+# script:
+#   - go test ./...
+
+language: generic
 sudo: required
-
-before_script:
-  - go vet ./...
-  - env GOOS=linux ARCH=amd64 go build ./impact.oscillator.go
+services:
+  - docker
 
 script:
-  - go test ./...
+  - docker-compose -f docker-compose.dev.yml up
 
 after_success:
   - zip -r imposcg.zip .

@@ -27,3 +27,5 @@ function populate() {
 }
 
 populate();
+
+// TODO look at this for testing https://dev.to/thawkin3/how-to-unit-test-html-and-vanilla-javascript-without-a-ui-framework-4io

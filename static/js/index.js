@@ -1,10 +1,10 @@
 import {rendererForNode} from './render.js';
-import{getAPIInfo} from './api-data.js';
+import{getAPIInfo, getParameterSymbols} from './api-data.js';
 import {FullPathBuilder, Header, PathsHolder, ParameterSymbols} from './components.js';
 import {addEventListeners} from './listeners.js'
 
 function populate() {
-    const symbols = new ParameterSymbols();
+    const symbols = new ParameterSymbols(getParameterSymbols);
 
     function processAPIInfo(data) {
         const renderer = rendererForNode("main");

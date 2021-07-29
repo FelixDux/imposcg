@@ -4,16 +4,22 @@ import {rendererForNode} from './render.js';
 const refreshForm =  rendererForNode('form');
 
 class ParameterSymbols {
-    constructor() {
-        this.symbols = new Map();;
+    constructor(symbolsGetter) {
+        this.symbols = new Map();
 
         const setter = data => {
-            data.Symbols.forEach( (e, _) => {
-                this.symbols.set(e.Parameter, e.Symbol);
-            });
+            if ('Symbols' in Object.keys(data)) {
+
+                data.Symbols.forEach( (e, _) => {
+                    this.symbols.set(e.Parameter, e.Symbol);
+                });
+            }
+            else {
+                console.log('Symbols lookup initialised with invalid data');
+            }
         };
 
-        getParameterSymbols(setter);
+        symbolsGetter(setter);
     }
 
     lookup(parameter) {

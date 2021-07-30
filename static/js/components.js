@@ -36,6 +36,8 @@ class ParameterSymbols {
 class FullPathBuilder {
     constructor(apiData) {
 
+        this.basePath = "";
+
         const setter = path => this.basePath = JSON.stringify(path).replace(/\"/g, "");
 
         extractFromAPIInfo(apiData, 'basePath', setter);

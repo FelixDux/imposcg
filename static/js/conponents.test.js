@@ -39,3 +39,33 @@ describe('Unit tests for looking up symbols for parameter names', () => {
         expect(console.log).toBeCalledTimes(0);
     })
 })
+
+describe('Unit tests for building a full path from a path and a base path', () => {
+    beforeEach(() => {
+      consoleSpy.mockClear()
+    })
+
+    const basePath = "/base/path";
+    const goodData = JSON.parse(`{"basePath": "${basePath}"}`);
+    const badData = JSON.parse(`{"acidPath": "${basePath}"}`);
+
+    test('Incorrectly initialised path builder fails gracefully', () => {
+        const builder = new FullPathBuilder(badData);
+
+        const path = "/more/path";
+
+        expect(builder.fullPath(path)).toBe(path);
+
+        expect(console.log).toBeCalledTimes(1);
+    })
+
+    test('Correctly initialised path builder builds correct path', () => {
+        const builder = new FullPathBuilder(goodData);
+
+        const path = "/more/path";
+
+        expect(builder.fullPath(path)).toBe(`${basePath}${path}`);
+
+        expect(console.log).toBeCalledTimes(0);
+    })
+})

@@ -1,4 +1,4 @@
-import{extractFromAPIInfo, kvObjectToPairs, getParameterSymbols} from './api-data.js';
+import{extractFromAPIInfo, kvObjectToPairs} from './api-data.js';
 import {rendererForNode} from './render.js';
 
 const refreshForm =  rendererForNode('form');
@@ -7,19 +7,20 @@ class ParameterSymbols {
     constructor(symbolsGetter) {
         this.symbols = new Map();
 
-        const setter = data => {
-            if ('Symbols' in Object.keys(data)) {
-
-                data.Symbols.forEach( (e, _) => {
-                    this.symbols.set(e.Parameter, e.Symbol);
-                });
-            }
-            else {
-                console.log('Symbols lookup initialised with invalid data');
-            }
-        };
+        const setter = (data) => {this.addSymbols(data)};
 
         symbolsGetter(setter);
+    }
+
+    addSymbols(data) {
+        try {
+            data.Symbols.forEach( (e, _) => {
+                this.symbols.set(e.Parameter, e.Symbol);
+            });
+        }
+        catch {
+            console.log('Symbols lookup initialised with invalid data');
+        }
     }
 
     lookup(parameter) {

@@ -52,14 +52,19 @@ class Parameter {
     constructor(apiData, symbols) {
         this.attributes = [];
 
-        this.name = symbols.lookup(apiData['name']);
-        this.description = apiData['description'];
+        if ('name' in apiData && 'description' in apiData) {
+            this.name = symbols.lookup(apiData.name);
+            this.description = apiData.description;
 
-        Object.keys(apiData).forEach( key => {
-            if (!['name', 'description', 'in'].includes(key)) {
-                this.attributes.push({name: key, value: apiData[key]});
-            }
-        })
+            Object.keys(apiData).forEach( key => {
+                if (!['name', 'description', 'in'].includes(key)) {
+                    this.attributes.push({name: key, value: apiData[key]});
+                }
+            })
+        }
+        else {
+            console.log(`Parameter initialised with invalid data: ${apiData}`);
+        }
     }
 
     html() {
@@ -157,4 +162,4 @@ class Header {
     }
 }
 
-export {FullPathBuilder, Header, PathsHolder, ParameterSymbols};
+export {FullPathBuilder, Parameter, Header, PathsHolder, ParameterSymbols};

@@ -1,4 +1,4 @@
-import {FullPathBuilder, Header, PathsHolder, ParameterSymbols} from './components.js';
+import {FullPathBuilder, Parameter, Header, PathsHolder, ParameterSymbols} from './components.js';
 
 const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
@@ -6,7 +6,10 @@ function mockSymbolsGetter(data) {
     return (callback) => {callback(data)};
 }
 
-const goodSymbolsGetter = mockSymbolsGetter({"Symbols":[{"Parameter":"offset","Symbol":"σ"},{"Parameter":"phi","Symbol":"φ"},{"Parameter":"frequency","Symbol":"ω"}]});
+const goodSymbolData = {"Symbols":[{"Parameter":"offset","Symbol":"σ"},{"Parameter":"phi","Symbol":"φ"},{"Parameter":"frequency","Symbol":"ω"}]};
+
+const goodSymbolsGetter = mockSymbolsGetter(goodSymbolData);
+const badSymbolsGetter = mockSymbolsGetter({});
 
 describe('Unit tests for looking up symbols for parameter names', () => {
     beforeEach(() => {
@@ -14,7 +17,6 @@ describe('Unit tests for looking up symbols for parameter names', () => {
     })
 
     test('Lookup fails gracefully when initialised with badly formatted data', () => {
-        const badSymbolsGetter = mockSymbolsGetter({});
 
         const symbols = new ParameterSymbols(badSymbolsGetter);
 
@@ -65,6 +67,45 @@ describe('Unit tests for building a full path from a path and a base path', () =
         const path = "/more/path";
 
         expect(builder.fullPath(path)).toBe(`${basePath}${path}`);
+
+        expect(console.log).toBeCalledTimes(0);
+    })
+})
+
+describe('Unit tests for rendering a parameter', () => {
+    beforeEach(() => {
+      consoleSpy.mockClear()
+    })
+
+    const goodAPIData = JSON.parse('{"minimum": 0,"type": "number","description": "Forcing frequency","name": "frequency","in": "formData","required": true}');
+    const badAPIData = JSON.parse('{}');
+
+    test('Parameter class fails gracefully when initialised with bad API data', () => {
+        const parameter = new Parameter(badAPIData, new ParameterSymbols(goodSymbolsGetter));
+
+        expect(console.log).toBeCalledTimes(1);
+
+        const result = parameter.html();
+
+        expect(typeof result).toBe("string");
+    })
+
+    test('Parameter class fails gracefully when initialised with bad symbols data', () => {
+        const parameter = new Parameter(goodAPIData, new ParameterSymbols(badSymbolsGetter));
+
+        expect(console.log).toBeCalledTimes(1);
+
+        const result = parameter.html();
+
+        expect(typeof result).toBe("string");
+    })
+
+    test('Parameter class renders when correctly initialised', () => {
+        const parameter = new Parameter(goodAPIData, new ParameterSymbols(goodSymbolsGetter));
+
+        const result = parameter.html();
+
+        expect(typeof result).toBe("string");
 
         expect(console.log).toBeCalledTimes(0);
     })

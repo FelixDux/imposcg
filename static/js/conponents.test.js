@@ -29,13 +29,13 @@ describe('Unit tests for looking up symbols for parameter names', () => {
         expect(console.log).toBeCalledTimes(0);
     })
 
-    // test('Lookup returns parameter when no symbol available', () => {
-    //     const symbols = new ParameterSymbols(goodSymbolsGetter);
+    test('Lookup returns parameter when no symbol available', () => {
+        const symbols = new ParameterSymbols(goodSymbolsGetter);
 
-    //     const parameter = 'Beta';
+        const parameter = 'Beta';
 
-    //     expect(symbols.lookup(parameter)).toBe(parameter);
+        expect(symbols.lookup(parameter)).toBe(parameter);
 
-    //     expect(console.log).toBeCalledTimes(0);
-    // })
+        expect(console.log).toBeCalledTimes(0);
+    })
 })

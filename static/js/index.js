@@ -1,6 +1,6 @@
 import {rendererForNode} from './render.js';
 import{getAPIInfo, getParameterSymbols} from './api-data.js';
-import {FullPathBuilder, Header, PathsHolder, ParameterSymbols} from './components.js';
+import {Header, PathsHolder, ParameterSymbols} from './components.js';
 import {addEventListeners} from './listeners.js'
 
 function populate() {
@@ -8,8 +8,6 @@ function populate() {
 
     function processAPIInfo(data) {
         const renderer = rendererForNode("main");
-
-        const pathBuilder = new FullPathBuilder(data);
 
         const header = new Header(data);
 

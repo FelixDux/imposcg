@@ -3,6 +3,16 @@ import {rendererForNode} from './render.js';
 
 const refreshForm =  rendererForNode('form');
 
+const imageRefresher = rendererForNode("imageTarget");
+
+function refreshImage(blob, result) {
+    imageRefresher(`<img src=${URL.createObjectURL(blob)} alt=${result} width="60%" align="center" />`);
+}
+
+function refreshImageWithError(error) {
+    imageRefresher(`<h1>Error</h1>${error.toString()}`);
+}
+
 class ParameterSymbols {
     constructor(symbolsGetter) {
         this.symbols = new Map();
@@ -119,6 +129,8 @@ class Path {
 
         this.path = path;
 
+        this.state = {src: "", result: "", blob: {}};
+
         const processPostData = data => {
             this.summary = data['summary'];
             this.id = this.summary.replace(/\s/g, "");
@@ -131,7 +143,8 @@ class Path {
 
     addListener() {
         const formContent = this.formHtml();
-        document.getElementById(this.id).addEventListener("click", function () {refreshForm(formContent);});
+        const action = this.path;
+        document.getElementById(this.id).addEventListener("click", function () {refreshForm(formContent); document.getElementById('form').action = action;});
     }
 
     navHtml() {
@@ -144,6 +157,15 @@ class Path {
         </div>`;
     }
 
+    submitHtml() {
+        if (this.parameters.length > 0) {
+            return '<input type ="submit" value="Show" >'
+        }
+        else {
+            return ""
+        }
+    }
+
     formHtml() {
 
         const parameterList = this.parameters.reduce(
@@ -152,7 +174,13 @@ class Path {
         );
 
         return `<h1>${this.description}</h1>
-            <table class="inputGroup"><tbody>${parameterList}</tbody></table>`;
+        <div class="row">
+        <div class="column left"><p /></div>
+        <div class="column">
+      <table class="inputGroup"><tbody>${parameterList}</tbody></table>
+      ${this.submitHtml()}</div>      
+      <div class="column right" id="imageTarget"></div>
+      </div>`;
     }
 }
 
@@ -160,9 +188,11 @@ class PathsHolder {
     constructor(apiData, symbols) {
         this.paths = [];
 
+        const pathBuilder = new FullPathBuilder(apiData);
+
         const setter = paths => {const pairs = kvObjectToPairs(paths); pairs.forEach(pair => {
-            if ('post' in pair[1]) {
-                this.paths.push(new Path(pair[0], pair[1], symbols))
+            if ('post' in pair[1] && pair[0].endsWith("image/")) {
+                this.paths.push(new Path(pathBuilder.fullPath(pair[0]), pair[1], symbols))
             };
         });};
 
@@ -173,11 +203,47 @@ class PathsHolder {
         return `<div><div class="topnav">
         ${this.paths.reduce((prev, curr) => prev.concat(curr.navHtml()), "")}
         </div>
-        <div id="form"></div></div>`;
+        <form id="form"></form></div>`;
     }
 
     addListeners() {
         this.paths.forEach(path => path.addListener());
+
+        let elem = document.getElementById('form');
+
+        elem.addEventListener("submit", function (event) {
+            fetch(elem.action,
+              {
+                method: 'POST',
+                body: new FormData(elem)
+              })
+            .then(response => {
+              if (!response.ok) {
+                  response.json().then((json) => {                    
+                      if ('error' in json) {
+                          throw json['error'];
+                      }
+                      else {
+                          throw 'Unknown error';
+                      }
+                  });
+              }
+              else {
+                return response.blob();
+              }
+            })
+            .then(blob => {
+                if (blob) {
+                    refreshImage(blob, "Done");
+                }
+            })
+            .catch((error) => {
+              console.error('Fetch operation failed:', error);
+              refreshImageWithError(error);
+            });
+            event.preventDefault();
+            
+        });
     }
 }
 

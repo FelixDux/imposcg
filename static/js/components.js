@@ -99,7 +99,7 @@ class Path {
     navHtml() {
         return `
         <div class="tooltip">
-        <a id='${this.id}'">
+        <a id='${this.id}' class="topnav">
         ${this.summary}
         <span class="tooltiptext">${this.description}</span>
         </a>
@@ -131,10 +131,10 @@ class PathsHolder {
     }
 
     html() {
-        return `<div className="topnav">
+        return `<div><div class="topnav">
         ${this.paths.reduce((prev, curr) => prev.concat(curr.navHtml()), "")}
         </div>
-        <div id="form"></div>`;
+        <div id="form"></div></div>`;
     }
 
     addListeners() {

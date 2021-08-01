@@ -68,11 +68,49 @@ class Parameter {
     }
 
     html() {
+        function renderAttribute(name, value) {
+            switch(name) {
+                case "default":
+                    return `value = ${value}`;
+                case "minimum":
+                    return `min = ${value}`;
+                case "maximum":
+                    return `max = ${value}`;
+                case "required":
+                    if (value) {
+                        return " required";
+                    }
+                    else {
+                        return " ";
+                    }
+                case "type":
+                    if (value === "number") {
+                        return `${name} = ${value} step=0.01`;
+                    }
+                default:
+                    return `${name} = ${value}`;
+            }
+        }
+
         const attributeList = this.attributes.reduce(
-            (acc, attribute) => `${acc}<li>${attribute.name}: ${attribute.value}`, ''
+            (acc, attribute) => `${acc} \n${renderAttribute(attribute.name,attribute.value)}`, ''
         );
 
-        return `${this.name}: ${this.description} <ul>${attributeList}</ul>`;
+        return `
+        <tr class = "inputGroup">
+          <td class = "inputGroup" width="10%"></td>
+          <td class = "inputGroup" >
+            <div class="tooltip">${this.name}
+            <span class="tooltiptext">${this.description}</span></div>
+            </td>
+          <td class = "inputGroup" >
+            <input 
+            id=${this.name}
+            name=${this.name}
+            ${attributeList}
+          />
+          </td>
+        </tr>`;
     }
 }
 
@@ -113,7 +151,8 @@ class Path {
             ""
         );
 
-        return `<p>${this.description}</p>${parameterList}`;
+        return `<h1>${this.description}</h1>
+            <table class="inputGroup"><tbody>${parameterList}</tbody></table>`;
     }
 }
 

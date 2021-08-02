@@ -47,11 +47,11 @@ func singularitySetImage(parameters *parameters.Parameters, numPoints uint) stri
 // @ID post-singularity-set-image
 // @Accept x-www-form-urlencoded
 // @Produce  png
-// @Param frequency formData number true "Forcing frequency" minimum(0)
-// @Param offset formData number true "Obstacle offset from origin"
-// @Param r formData number true "Coefficient of restitution" minimum(0) maximum(1)
-// @Param maxPeriods formData int false "Number of periods without an impact after which the algorithm will report 'long excursions'" default(100)
-// @Param numPoints formData int false "Number of impacts to map" default(5000)
+// @Param frequency formData number true "Forcing frequency" minimum(0) group("Dynamics")
+// @Param offset formData number true "Obstacle offset from origin" group("Dynamics")
+// @Param r formData number true "Coefficient of restitution" minimum(0) maximum(1) group("Dynamics")
+// @Param maxPeriods formData int false "Number of periods without an impact after which the algorithm will report 'long excursions'" default(100) group("Control Parameters")
+// @Param numPoints formData int false "Number of impacts to map" default(5000) group("Control Parameters")
 // @Success 200 {object} dynamics.IterationResult
 // @Failure 400 {object} string "Invalid parameters"
 // @Router /singularity-set/image/ [post]
@@ -80,11 +80,11 @@ func PostSingularitySetImage(c *gin.Context) {
 // @ID post-singularity-set-data
 // @Accept x-www-form-urlencoded
 // @Produce json
-// @Param frequency formData number true "Forcing frequency" minimum(0)
-// @Param offset formData number true "Obstacle offset from origin"
-// @Param r formData number true "Coefficient of restitution" minimum(0) maximum(1)
-// @Param maxPeriods formData int false "Number of periods without an impact after which the algorithm will report 'long excursions'" default(100)
-// @Param numPoints formData int false "Number of impacts to map" default(5000)
+// @Param frequency formData number true "Forcing frequency" minimum(0) group("Dynamics")
+// @Param offset formData number true "Obstacle offset from origin" group("Dynamics")
+// @Param r formData number true "Coefficient of restitution" minimum(0) maximum(1) group("Dynamics")
+// @Param maxPeriods formData int false "Number of periods without an impact after which the algorithm will report 'long excursions'" default(100) group("Control Parameters")
+// @Param numPoints formData int false "Number of impacts to map" default(5000) group("Control Parameters")
 // @Success 200 {object} dynamics.IterationResult
 // @Failure 400 {object} string "Invalid parameters"
 // @Router /singularity-set/data/ [post]

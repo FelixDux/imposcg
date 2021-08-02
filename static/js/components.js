@@ -62,13 +62,20 @@ class Parameter {
     constructor(apiData, symbols) {
         this.attributes = [];
 
+        if ('group' in apiData) {
+            this.group = apiData.group;
+        }
+        else {
+            this.group = '';
+        }
+
         if ('name' in apiData && 'description' in apiData) {
             this.name = apiData.name;
             this.label = symbols.lookup(apiData.name);
             this.description = apiData.description;
 
             Object.keys(apiData).forEach( key => {
-                if (!['name', 'description', 'in'].includes(key)) {
+                if (!['name', 'description', 'in', 'group'].includes(key)) {
                     this.attributes.push({name: key, value: apiData[key]});
                 }
             })
@@ -127,6 +134,33 @@ class Parameter {
     }
 }
 
+class ParameterGroup {
+    constructor(groupName) {
+        this.group = groupName;
+        this.parameters = [];
+    }
+
+    addParameter(p) {
+        this.parameters.push(p);
+    }
+
+    html() {
+
+        const parameterList = [...this.parameters.values()].reduce(
+            (acc, parameter) => `${acc} ${parameter.html()}`,
+            ""
+        );
+
+        return `<tr class = "inputGroup">
+        <td class = "inputGroup" >
+        <h2>${this.group}</h2></td></tr>
+        <tr class = "inputGroup">
+        <td class = "inputGroup" >
+        <table class="inputGroup"><tbody>${parameterList}</tbody></table>
+        </td></tr>`;
+    }
+}
+
 class Path {
     constructor(path, apiData, symbols) {
 
@@ -138,7 +172,16 @@ class Path {
             this.summary = data['summary'];
             this.id = this.summary.replace(/\s/g, "");
             this.description = data['description'];
-            this.parameters = data['parameters'].map((e, i) => new Parameter(e, symbols));
+            const parameters = data['parameters'].map((e, i) => new Parameter(e, symbols));
+            this.groups = new Map();
+
+            parameters.forEach((p, i) => {
+                if (!this.groups.has(p.group)) {
+                    this.groups.set(p.group, new ParameterGroup(p.group))
+                }
+
+                this.groups.get(p.group).addParameter(p);
+            });
         };
 
         extractFromAPIInfo(apiData, 'post', processPostData);
@@ -161,7 +204,7 @@ class Path {
     }
 
     submitHtml() {
-        if (this.parameters.length > 0) {
+        if (this.groups.length > 0) {
             return '<input type ="submit" value="Show" >'
         }
         else {
@@ -171,8 +214,8 @@ class Path {
 
     formHtml() {
 
-        const parameterList = this.parameters.reduce(
-            (acc, parameter) => `${acc} ${parameter.html()}`,
+        const groupList = [...this.groups.values()].reduce(
+            (acc, group) => `${acc} ${group.html()}`,
             ""
         );
 
@@ -180,7 +223,7 @@ class Path {
         <div class="row">
         <div class="column left"><p /></div>
         <div class="column"><em>${this.description}</em>
-      <table class="inputGroup"><tbody>${parameterList}</tbody></table>
+      <table class="inputGroup"><tbody>${groupList}</tbody></table>
       ${this.submitHtml()}</div>      
       <div class="column right" id="imageTarget"></div>
       </div>`;

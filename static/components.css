@@ -162,17 +162,12 @@ input[type=number] {
   .topnav a:hover {
     background-color: #ddd;
     color: black;
-  } 
-  
-  /* Links - change color on selected */
-  .topnav a:active {
-    background-color:black;
-    color: rgb(186, 175, 238);
-  } 
+  }
   
   .column {
     float: left;
     width: 20%;
+    border-right: 1px solid #333333;
   } 
   
   .column.left {

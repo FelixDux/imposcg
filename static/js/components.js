@@ -6,7 +6,7 @@ const refreshForm =  rendererForNode('form');
 const imageRefresher = rendererForNode("imageTarget");
 
 function refreshImage(blob, result) {
-    imageRefresher(`<img src=${URL.createObjectURL(blob)} alt=${result} width="60%" align="center" />`);
+    imageRefresher(`<img src=${URL.createObjectURL(blob)} alt=${result} height="70%" align="center" />`);
 }
 
 function refreshImageWithError(error) {
@@ -63,7 +63,8 @@ class Parameter {
         this.attributes = [];
 
         if ('name' in apiData && 'description' in apiData) {
-            this.name = symbols.lookup(apiData.name);
+            this.name = apiData.name;
+            this.label = symbols.lookup(apiData.name);
             this.description = apiData.description;
 
             Object.keys(apiData).forEach( key => {
@@ -110,7 +111,7 @@ class Parameter {
         <tr class = "inputGroup">
           <td class = "inputGroup" width="10%"></td>
           <td class = "inputGroup" >
-            <div class="tooltip">${this.name}
+            <div class="tooltip">${this.label}
             <span class="tooltiptext">${this.description}</span></div>
             </td>
           <td class = "inputGroup" >
@@ -173,10 +174,10 @@ class Path {
             ""
         );
 
-        return `<h1>${this.description}</h1>
+        return `
         <div class="row">
         <div class="column left"><p /></div>
-        <div class="column">
+        <div class="column"><em>${this.description}</em>
       <table class="inputGroup"><tbody>${parameterList}</tbody></table>
       ${this.submitHtml()}</div>      
       <div class="column right" id="imageTarget"></div>
@@ -218,7 +219,7 @@ class PathsHolder {
                 body: new FormData(elem)
               })
             .then(response => {
-              if (!response.ok) {
+              if (response.status >= 400 || !response.ok) {
                   response.json().then((json) => {                    
                       if ('error' in json) {
                           throw json['error'];

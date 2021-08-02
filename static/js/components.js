@@ -6,7 +6,7 @@ const refreshForm =  rendererForNode('form');
 const imageRefresher = rendererForNode("imageTarget");
 
 function refreshImage(blob, result) {
-    imageRefresher(`<img src=${URL.createObjectURL(blob)} alt=${result} height="70%" align="center" />`);
+    imageRefresher(`<img src=${URL.createObjectURL(blob)} alt=${result} width="50%" align="center" />`);
 }
 
 function refreshImageWithError(error) {
@@ -96,7 +96,10 @@ class Parameter {
                     }
                 case "type":
                     if (value === "number") {
-                        return `${name} = ${value} step=0.01`;
+                        return `${name} = ${value} step=0.01 style="width: 6em"`;
+                    }
+                    else {
+                        return `${name} = ${value} size=6`;
                     }
                 default:
                     return `${name} = ${value}`;
@@ -109,7 +112,6 @@ class Parameter {
 
         return `
         <tr class = "inputGroup">
-          <td class = "inputGroup" width="10%"></td>
           <td class = "inputGroup" >
             <div class="tooltip">${this.label}
             <span class="tooltiptext">${this.description}</span></div>

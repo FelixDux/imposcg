@@ -37,7 +37,7 @@ func singularitySetImage(parameters *parameters.Parameters, numPoints uint) stri
 	if result.Singularity == nil || result.Dual == nil {
 		return errString
 	} else {
-		return charts.ImpactMapPlot(*parameters, [][]impact.Impact{result.Singularity,result.Dual}, 0.0, 0.0).Name()
+		return charts.ScatterPlot(*parameters, [][]impact.Impact{result.Singularity,result.Dual}, "Singularity set and dual").Name()
 	}
 }
 

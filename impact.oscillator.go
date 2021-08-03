@@ -4,6 +4,7 @@ import (
 	"github.com/FelixDux/imposcg/controllers"
 	"github.com/FelixDux/imposcg/docs"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/contrib/static"
 
 	"context"
 	"log"
@@ -22,24 +23,10 @@ import (
 // https://github.com/swaggo/swag/issues/367
 // https://github.com/swaggo/swag#how-to-use-it-with-gin
 
-// @title Impact Oscillator API
+// @title Impact Oscillator
 // @version 1.0
 // @description Analysis and simulation of a simple vibro-impact model developed in Go - principally as a learning exercise
 // @BasePath /api
-
-// Basic structure:
-// / - SPA
-// /swagger/*any - REST schema
-// /api/iteration/data
-// /api/iteration/image
-// /api/singularity-set/data
-// /api/singularity-set/image
-// /api/doa/data
-// /api/doa/image
-// /api/offset-response/data
-// /api/offset-response/image
-// /api/frequency-response/data
-// /api/frequency-response/image
 
 var server *gin.Engine
 var ginLambda *ginadapter.GinLambda
@@ -84,14 +71,13 @@ func setupServer() *gin.Engine {
 
 	controllers.AddIterationControllers(r)
 	controllers.AddSingularitySetControllers(r)
+	controllers.AddParameterInfoControllers(r)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	r.GET("/", func (c *gin.Context)  {
-		c.JSON(200, gin.H{
-			"message": "watch this space ...",
-		})
-	})
+	// Serve frontend static files
+	r.Use(static.Serve("/", static.LocalFile("./static", true)))
+	r.Static("/js/", "./static/js/")
 
 	return r
 }

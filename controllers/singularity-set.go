@@ -37,18 +37,18 @@ func singularitySetImage(parameters *parameters.Parameters, numPoints uint) stri
 	if result.Singularity == nil || result.Dual == nil {
 		return errString
 	} else {
-		return charts.ImpactMapPlot(*parameters, [][]impact.Impact{result.Singularity,result.Dual}, 0.0, 0.0).Name()
+		return charts.ScatterPlot(*parameters, [][]impact.Impact{result.Singularity,result.Dual}, "Singularity set and dual").Name()
 	}
 }
 
 // PostSingularitySetImage godoc
-// @Summary Return scatter plot of impacts which map to and from zero velocity impacts for a specified set of parameters
+// @Summary Singularity set
 // @Description Return scatter plot of impacts which map to and from zero velocity impacts for a specified set of parameters
 // @ID post-singularity-set-image
 // @Accept x-www-form-urlencoded
 // @Produce  png
 // @Param frequency formData number true "Forcing frequency" minimum(0)
-// @Param offset formData number true "Obstacle offset from origin"
+// @Param offset formData number true "Obstacle offset from origin" 
 // @Param r formData number true "Coefficient of restitution" minimum(0) maximum(1)
 // @Param maxPeriods formData int false "Number of periods without an impact after which the algorithm will report 'long excursions'" default(100)
 // @Param numPoints formData int false "Number of impacts to map" default(5000)
@@ -75,7 +75,7 @@ func PostSingularitySetImage(c *gin.Context) {
 }
 
 // PostSingularitySetData godoc
-// @Summary Return impacts which map to and from zero velocity impacts for a specified set of parameters
+// @Summary Singularity set data
 // @Description Return impacts which map to and from zero velocity impacts for a specified set of parameters
 // @ID post-singularity-set-data
 // @Accept x-www-form-urlencoded
@@ -101,7 +101,7 @@ func PostSingularitySetData(c *gin.Context) {
 			log.Print(errString)
 			c.JSON(400, fmt.Sprintf("Failed to complete singularity set - %s", errString))
 		} else {
-			c.JSON(200, gin.H{"message": result,})
+			c.JSON(200, result)
 		}
 	}
 }

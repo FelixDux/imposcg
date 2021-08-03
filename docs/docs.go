@@ -33,7 +33,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Return data from iterating the impact map",
+                "summary": "Impact data",
                 "operationId": "post-iteration-data",
                 "parameters": [
                     {
@@ -116,7 +116,7 @@ var doc = `{
                 "produces": [
                     "image/png"
                 ],
-                "summary": "Return scatter plot from iterating the impact map",
+                "summary": "Impact map",
                 "operationId": "post-iteration-image",
                 "parameters": [
                     {
@@ -190,6 +190,42 @@ var doc = `{
                 }
             }
         },
+        "/parameter-info/groups/": {
+            "get": {
+                "description": "Groups for displaying related parameters",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Parameter groups",
+                "operationId": "get-parameter-groups",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ParameterInfo"
+                        }
+                    }
+                }
+            }
+        },
+        "/parameter-info/symbols/": {
+            "get": {
+                "description": "Greek symbols to be used for rendering specified parameters",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Parameter symbols",
+                "operationId": "get-parameter-symbols",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ParameterInfo"
+                        }
+                    }
+                }
+            }
+        },
         "/singularity-set/data/": {
             "post": {
                 "description": "Return impacts which map to and from zero velocity impacts for a specified set of parameters",
@@ -199,7 +235,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Return impacts which map to and from zero velocity impacts for a specified set of parameters",
+                "summary": "Singularity set data",
                 "operationId": "post-singularity-set-data",
                 "parameters": [
                     {
@@ -266,7 +302,7 @@ var doc = `{
                 "produces": [
                     "image/png"
                 ],
-                "summary": "Return scatter plot of impacts which map to and from zero velocity impacts for a specified set of parameters",
+                "summary": "Singularity set",
                 "operationId": "post-singularity-set-image",
                 "parameters": [
                     {
@@ -326,6 +362,28 @@ var doc = `{
         }
     },
     "definitions": {
+        "controllers.ParameterInfo": {
+            "type": "object",
+            "properties": {
+                "symbols": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controllers.ParameterProperty"
+                    }
+                }
+            }
+        },
+        "controllers.ParameterProperty": {
+            "type": "object",
+            "properties": {
+                "parameter": {
+                    "type": "string"
+                },
+                "property": {
+                    "type": "string"
+                }
+            }
+        },
         "dynamics.IterationResult": {
             "type": "object",
             "properties": {
@@ -369,7 +427,7 @@ var SwaggerInfo = swaggerInfo{
 	Host:        "",
 	BasePath:    "/api",
 	Schemes:     []string{},
-	Title:       "Impact Oscillator API",
+	Title:       "Impact Oscillator",
 	Description: "Analysis and simulation of a simple vibro-impact model developed in Go - principally as a learning exercise",
 }
 

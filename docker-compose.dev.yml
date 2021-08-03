@@ -8,4 +8,13 @@ services:
     volumes:
       - .:/usr/src/imposcg
     command: ["go", "test", "./..."]
+  ui-tests:
+    stdin_open: true
+    build:
+      context: ./static
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - ./static:/app
+    command: ["npm", "test"]
   

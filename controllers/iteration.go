@@ -37,17 +37,17 @@ func iterationImage(parameters *parameters.Parameters, phi float64, v float64, n
 }
 
 // PostIterationImage godoc
-// @Summary Return scatter plot from iterating the impact map
+// @Summary Impact map
 // @Description Return scatter plot from iterating the impact map for a specified set of parameters
 // @ID post-iteration-image
 // @Accept x-www-form-urlencoded
 // @Produce  png
 // @Param frequency formData number true "Forcing frequency" minimum(0)
-// @Param offset formData number true "Obstacle offset from origin"
-// @Param r formData number true "Coefficient of restitution" minimum(0) maximum(1)
-// @Param maxPeriods formData int false "Number of periods without an impact after which the algorithm will report 'long excursions'" default(100)
-// @Param phi formData number true "Phase at initial impact" default(0.0)
-// @Param v formData number true "Velocity at initial impact" default(0.0)
+// @Param offset formData number true "Obstacle offset from origin" 
+// @Param r formData number true "Coefficient of restitution" minimum(0) maximum(1) 
+// @Param maxPeriods formData int false "Number of periods without an impact after which the algorithm will report 'long excursions'" default(100) 
+// @Param phi formData number true "Phase at initial impact" default(0.0) 
+// @Param v formData number true "Velocity at initial impact" default(0.0) 
 // @Param numIterations formData int false "Number of iterations of impact map" default(5000)
 // @Success 200 {object} dynamics.IterationResult
 // @Failure 400 {object} string "Invalid parameters"
@@ -72,7 +72,7 @@ func PostIterationImage(c *gin.Context) {
 }
 
 // PostIterationData godoc
-// @Summary Return data from iterating the impact map
+// @Summary Impact data
 // @Description Return data from iterating the impact map for a specified set of parameters
 // @ID post-iteration-data
 // @Accept  x-www-form-urlencoded
@@ -106,9 +106,7 @@ func PostIterationData(c *gin.Context) {
 	
 	data := impactMap.IterateFromPoint(inputs.phi, inputs.v, inputs.numIterations)
 
-	c.JSON(200, gin.H{
-		"message": data,
-	})
+	c.JSON(200,  data)
 }
 
 func AddIterationControllers (r *gin.Engine) {

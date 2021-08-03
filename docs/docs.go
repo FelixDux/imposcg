@@ -190,6 +190,24 @@ var doc = `{
                 }
             }
         },
+        "/parameter-info/groups/": {
+            "get": {
+                "description": "Groups for displaying related parameters",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Parameter groups",
+                "operationId": "get-parameter-groups",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ParameterInfo"
+                        }
+                    }
+                }
+            }
+        },
         "/parameter-info/symbols/": {
             "get": {
                 "description": "Greek symbols to be used for rendering specified parameters",
@@ -350,18 +368,18 @@ var doc = `{
                 "symbols": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/controllers.ParameterSymbol"
+                        "$ref": "#/definitions/controllers.ParameterProperty"
                     }
                 }
             }
         },
-        "controllers.ParameterSymbol": {
+        "controllers.ParameterProperty": {
             "type": "object",
             "properties": {
                 "parameter": {
                     "type": "string"
                 },
-                "symbol": {
+                "property": {
                     "type": "string"
                 }
             }

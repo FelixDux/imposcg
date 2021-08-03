@@ -25,7 +25,7 @@ class ParameterSymbols {
     addSymbols(data) {
         try {
             data.Symbols.forEach( (e, _) => {
-                this.symbols.set(e.Parameter, e.Symbol);
+                this.symbols.set(e.Parameter, e.Property);
             });
         }
         catch {

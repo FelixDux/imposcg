@@ -7,17 +7,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ParameterSymbol struct {
+type ParameterProperty struct {
 	Parameter string
-	Symbol string
+	Property string
 }
 
 type ParameterInfo struct {
-	Symbols []ParameterSymbol
+	Symbols []ParameterProperty
 }
 
-func (info ParameterInfo) Add(parameter string, symbol string) *ParameterInfo {
-	info.Symbols = append(info.Symbols, ParameterSymbol{Parameter: parameter, Symbol: symbol})
+func (info ParameterInfo) Add(parameter string, property string) *ParameterInfo {
+	info.Symbols = append(info.Symbols, ParameterProperty{Parameter: parameter, Property: property})
 
 	return &info
 }
@@ -38,6 +38,37 @@ func GetParameterSymbols(c *gin.Context) {
 		"phi": "φ",}
 
 	for k, v := range symbols {
+		info = info.Add(k, v)
+	}
+
+	c.JSON(200, info)
+}
+
+// GetParameterGroups godoc
+// @Summary Parameter groups
+// @Description Groups for displaying related parameters
+// @ID get-parameter-groups
+// @Produce  json
+// @Success 200 {object} controllers.ParameterInfo
+// @Router /parameter-info/groups/ [get]
+func GetParameterGroups(c *gin.Context) {
+	info := &ParameterInfo{}
+
+	const sysParams = "System parameters"
+	const ctlParams = "Control parameters"
+	const initialImpact = "Initial impact"
+
+	groups := map[string]string{
+		"frequency": sysParams,
+		"offset": sysParams,
+		"r": sysParams,
+		"phi": initialImpact,
+		"maxPeriods": ctlParams,
+		"numIterations": ctlParams,
+		"numPoints": ctlParams,
+	}
+
+	for k, v := range groups {
 		info = info.Add(k, v)
 	}
 

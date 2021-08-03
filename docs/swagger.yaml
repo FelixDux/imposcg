@@ -4,14 +4,14 @@ definitions:
     properties:
       symbols:
         items:
-          $ref: '#/definitions/controllers.ParameterSymbol'
+          $ref: '#/definitions/controllers.ParameterProperty'
         type: array
     type: object
-  controllers.ParameterSymbol:
+  controllers.ParameterProperty:
     properties:
       parameter:
         type: string
-      symbol:
+      property:
         type: string
     type: object
   dynamics.IterationResult:
@@ -159,6 +159,18 @@ paths:
           schema:
             type: string
       summary: Impact map
+  /parameter-info/groups/:
+    get:
+      description: Groups for displaying related parameters
+      operationId: get-parameter-groups
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.ParameterInfo'
+      summary: Parameter groups
   /parameter-info/symbols/:
     get:
       description: Greek symbols to be used for rendering specified parameters

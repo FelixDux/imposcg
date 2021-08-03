@@ -13,7 +13,7 @@ function refreshImageWithError(error) {
     imageRefresher(`<h1>Error</h1>${error.toString()}`);
 }
 
-class ParameterSymbols {
+class ParameterInfo {
     constructor(symbolsGetter) {
         this.symbols = new Map();
 
@@ -59,19 +59,15 @@ class FullPathBuilder {
 }
 
 class Parameter {
-    constructor(apiData, symbols) {
+    constructor(apiData, symbols, groups) {
         this.attributes = [];
 
-        if ('group' in apiData) {
-            this.group = apiData.group;
-        }
-        else {
-            this.group = '';
-        }
+        this.group = '';
 
         if ('name' in apiData && 'description' in apiData) {
             this.name = apiData.name;
             this.label = symbols.lookup(apiData.name);
+            this.group = groups.lookup(apiData.name);
             this.description = apiData.description;
 
             Object.keys(apiData).forEach( key => {
@@ -162,7 +158,7 @@ class ParameterGroup {
 }
 
 class Path {
-    constructor(path, apiData, symbols) {
+    constructor(path, apiData, symbols, groups) {
 
         this.path = path;
 
@@ -172,7 +168,7 @@ class Path {
             this.summary = data['summary'];
             this.id = this.summary.replace(/\s/g, "");
             this.description = data['description'];
-            const parameters = data['parameters'].map((e, i) => new Parameter(e, symbols));
+            const parameters = data['parameters'].map((e, i) => new Parameter(e, symbols, groups));
             this.groups = new Map();
 
             parameters.forEach((p, i) => {
@@ -231,14 +227,14 @@ class Path {
 }
 
 class PathsHolder {
-    constructor(apiData, symbols) {
+    constructor(apiData, symbols, groups) {
         this.paths = [];
 
         const pathBuilder = new FullPathBuilder(apiData);
 
         const setter = paths => {const pairs = kvObjectToPairs(paths); pairs.forEach(pair => {
             if ('post' in pair[1] && pair[0].endsWith("image/")) {
-                this.paths.push(new Path(pathBuilder.fullPath(pair[0]), pair[1], symbols))
+                this.paths.push(new Path(pathBuilder.fullPath(pair[0]), pair[1], symbols, groups))
             };
         });};
 
@@ -313,4 +309,4 @@ class Header {
     }
 }
 
-export {FullPathBuilder, Parameter, Header, PathsHolder, ParameterSymbols};
+export {FullPathBuilder, Parameter, Header, PathsHolder, ParameterInfo};

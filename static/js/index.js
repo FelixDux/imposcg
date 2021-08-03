@@ -1,17 +1,18 @@
 import {rendererForNode} from './render.js';
-import{getAPIInfo, getParameterSymbols} from './api-data.js';
-import {Header, PathsHolder, ParameterSymbols} from './components.js';
+import{getAPIInfo, getParameterSymbols, getParameterGroups} from './api-data.js';
+import {Header, PathsHolder, ParameterInfo} from './components.js';
 import {addEventListeners} from './listeners.js'
 
 function populate() {
-    const symbols = new ParameterSymbols(getParameterSymbols);
+    const symbols = new ParameterInfo(getParameterSymbols);
+    const groups = new ParameterInfo(getParameterGroups);
 
     function processAPIInfo(data) {
         const renderer = rendererForNode("main");
 
         const header = new Header(data);
 
-        const paths = new PathsHolder(data, symbols);
+        const paths = new PathsHolder(data, symbols, groups);
 
         renderer(`${header.html()}${paths.html()}`);
     }
@@ -20,7 +21,7 @@ function populate() {
 
     // Wait until the document is ready
     document.addEventListener("DOMContentLoaded", function() { 
-        addEventListeners(symbols);
+        addEventListeners(symbols, groups);
     });
 }
 

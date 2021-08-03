@@ -63,6 +63,7 @@ func GetParameterGroups(c *gin.Context) {
 		"offset": sysParams,
 		"r": sysParams,
 		"phi": initialImpact,
+		"v": initialImpact,
 		"maxPeriods": ctlParams,
 		"numIterations": ctlParams,
 		"numPoints": ctlParams,
@@ -78,4 +79,5 @@ func GetParameterGroups(c *gin.Context) {
 func AddParameterInfoControllers(r *gin.Engine) {
 	parameterInfo := r.Group("/api/parameter-info")
 	parameterInfo.GET("/symbols", GetParameterSymbols)
+	parameterInfo.GET("/groups", GetParameterGroups)
 }

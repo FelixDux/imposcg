@@ -9,6 +9,8 @@ const getAPIInfo = callback => getFromAPI("/swagger/doc.json", callback);
 
 const getParameterSymbols = callback => getFromAPI("/api/parameter-info/symbols", callback);
 
+const getParameterGroups = callback => getFromAPI("/api/parameter-info/groups", callback);
+
 function extractFromAPIInfo(data, key, callback) {
     if (key in data) {
         callback(data[key]);
@@ -26,4 +28,4 @@ function kvObjectToPairs(obj) {
     return keys.map( (element, index) => [element, values[index]] );
 }
 
-export {getParameterSymbols, getAPIInfo, extractFromAPIInfo, kvObjectToPairs};
+export {getParameterSymbols, getParameterGroups, getAPIInfo, extractFromAPIInfo, kvObjectToPairs};

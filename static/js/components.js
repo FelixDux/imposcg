@@ -183,10 +183,11 @@ class Path {
         extractFromAPIInfo(apiData, 'post', processPostData);
     }
 
-    addListener() {
+    addListener(refreshNavbar) {
         const formContent = this.formHtml();
         const action = this.path;
-        document.getElementById(this.id).addEventListener("click", function () {refreshForm(formContent); document.getElementById('form').action = action;});
+        const refreshNav = () => {refreshNavbar(action);}
+        document.getElementById(this.id).addEventListener("click", function () {refreshForm(formContent); document.getElementById('form').action = action; refreshNav();});
     }
 
     navHtml() {
@@ -199,13 +200,12 @@ class Path {
         </div>`;
     }
 
+    updateSelected(selectedPath) {
+        document.getElementById(this.id).style.fontWeight = (this.path === selectedPath) ? "bold" : "normal";
+    }
+
     submitHtml() {
-        if (this.groups.length > 0) {
-            return '<input type ="submit" value="Show" >'
-        }
-        else {
-            return ""
-        }
+        return '<input type ="submit" value="Show" >'
     }
 
     formHtml() {
@@ -241,15 +241,22 @@ class PathsHolder {
         extractFromAPIInfo(apiData, 'paths', setter);
     }
 
-    html() {
-        return `<div><div class="topnav">
+    navHtml() {
+        return `<div class="topnav">
         ${this.paths.reduce((prev, curr) => prev.concat(curr.navHtml()), "")}
-        </div>
+        </div>`;
+    }
+
+    html() {
+        return `<div><div id='navbar'>${this.navHtml()}</div>
         <form id="form"></form></div>`;
     }
 
     addListeners() {
-        this.paths.forEach(path => path.addListener());
+
+        const refreshNavbar = (selectedPath) => {this.paths.forEach((path, _) => {path.updateSelected(selectedPath);});}
+
+        this.paths.forEach(path => path.addListener(refreshNavbar));
 
         let elem = document.getElementById('form');
 

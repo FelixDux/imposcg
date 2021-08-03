@@ -13,6 +13,10 @@ function refreshImageWithError(error) {
     imageRefresher(`<h1>Error</h1>${error.toString()}`);
 }
 
+function refreshFormWithError(error) {
+    refreshForm(`<h1>Error</h1>${error.toString()}`);
+}
+
 class ParameterInfo {
     constructor(symbolsGetter) {
         this.symbols = new Map();
@@ -226,6 +230,53 @@ class Path {
     }
 }
 
+class InfoSelector {
+    constructor(path, summary, description) {
+        this.path = path;
+        this.summary = summary;
+        this.description = description;
+        this.id = this.summary.replace(/\s/g, "");
+    }
+
+    addListener(refreshNavbar) {
+        const action = this.path;
+        const refreshNav = () => {refreshNavbar(action);}
+        document.getElementById(this.id).addEventListener("click", function () {
+            document.getElementById('form').action = action; 
+            refreshNav();
+            fetch(action).then((response) => {
+                return response.text();
+            })
+            .then((text) => refreshForm(`<div style="overflow-y:scroll;max-height:66vh;padding-left: 50px;
+            padding-right: 50px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            hyphens: auto;
+            word-wrap: break-word;
+            text-rendering: optimizeLegibility;
+            font-kerning: normal;">${text}</div>`))
+            .catch((error) => {
+              console.error('Fetch operation failed:', error);
+              refreshFormWithError(error);
+            });;
+        });
+    }
+
+    navHtml() {
+        return `
+        <div class="tooltip">
+        <a id='${this.id}' class="topnav">
+        ${this.summary}
+        <span class="tooltiptext">${this.description}</span>
+        </a>
+        </div>`;
+    }
+
+    updateSelected(selectedPath) {
+        document.getElementById(this.id).style.fontWeight = (this.path === selectedPath) ? "bold" : "normal";
+    }
+}
+
 class PathsHolder {
     constructor(apiData, symbols, groups) {
         this.paths = [];
@@ -239,6 +290,8 @@ class PathsHolder {
         });};
 
         extractFromAPIInfo(apiData, 'paths', setter);
+
+        this.paths.push(new InfoSelector("/maths.html", "Mathematical Background", "An overview of the mathematical model, how it behaves and what the parameters do."));
     }
 
     navHtml() {

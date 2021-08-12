@@ -36,10 +36,46 @@ type OrbitClassifier struct {
 	classifier func(*dynamics.IterationResult) OrbitClassification
 }
 
-func (classifier OrbitClassifier) Classify(phi float64, velocity float64) OrbitClassification {
+type OrbitClassificationResult struct {
+	Phi float64
+	V float64
+	Classification OrbitClassification
+}
+
+func (classifier OrbitClassifier) Classify(phi float64, velocity float64) OrbitClassificationResult {
 	iterationResult := classifier.impactMap.IterateFromPoint(phi, velocity, classifier.numIterations)
 
-	return classifier.classifier(iterationResult)
+	return OrbitClassificationResult{Phi: phi, V: velocity, Classification: classifier.classifier(iterationResult)}
+}
+
+
+
+func (classifier OrbitClassifier) BuildClassification(numPhases uint, numVelocities uint, maxVelocity float64) [] OrbitClassificationResult {
+
+	result := make([]OrbitClassificationResult, numPhases*numVelocities)
+
+	return result
+}
+
+
+func (classifier OrbitClassifier) ClassifyForRange(numPhases uint, numVelocities uint, 
+	minVelocity float64, maxVelocity float64, result chan OrbitClassificationResult) {
+
+	deltaPhi := 1.0 / float64(numPhases+1)
+	deltaV := (maxVelocity - minVelocity) / float64(numVelocities+1)
+
+	phi := deltaPhi / 2.0
+	v := deltaV / 2.0
+
+	for i:=uint(0); i < numPhases; i++ {
+		for j:=uint(0); j < numVelocities; j++ {
+			result <- classifier.Classify(phi, v)
+
+			phi += deltaPhi
+			v += deltaV
+		}
+	}
+
 }
 
 func NewOrbitClassifier(impactMap *dynamics.ImpactMap, numIterations uint) *OrbitClassifier {

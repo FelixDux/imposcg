@@ -11,7 +11,7 @@ func TestClassificationLabels(t *testing.T) {
 		"(∞,∞)": {chaos: true, chatter: false, longExcursions: false, numImpacts: 99, numPeriods: 12},
 		"(99,12)": {chaos: false, chatter: false, longExcursions: false, numImpacts: 99, numPeriods: 12},
 		"chatter": {chaos: false, chatter: true, longExcursions: false, numImpacts: 99, numPeriods: 12},
-		"long excursions": {chaos: false, chatter: false, longExcursions: true, numImpacts: 99, numPeriods: 12},
+		"long excursions": {chaos: true, chatter: false, longExcursions: true, numImpacts: 99, numPeriods: 12},
 	}
 
     for expected, classification := range classificationLabelTests {

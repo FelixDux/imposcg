@@ -59,7 +59,7 @@ func (impact Impact) almostEqualAltOpt(other Impact, comparer cmp.Option) bool {
 
 var defaultImpactComparer = ImpactComparer(1e-3, 1e-3)
 
-func (impact Impact) almostEqual(other Impact) bool {
+func (impact Impact) AlmostEqual(other Impact) bool {
 	return impact.almostEqualAltOpt(other, defaultImpactComparer)
 }
 

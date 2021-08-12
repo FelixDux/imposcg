@@ -20,7 +20,7 @@ func TestImpactEqualityDefault(t *testing.T) {
 			}
 		}
 
-		if x.almostEqual(y) != expected {
+		if x.AlmostEqual(y) != expected {
 			t.Errorf("Default comparer %s treat impacts %+v and %+v as equal", shoulder(), x, y)
 		}
 	}

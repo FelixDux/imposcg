@@ -80,7 +80,7 @@ type IterationResult struct
 {
 	Impacts []impact.Impact
 
-	longExcursions bool
+	LongExcursions bool
 }
 
 type ImpactResult struct 
@@ -156,7 +156,7 @@ func (impactMap ImpactMap) iterate(initialImpact impact.Impact, numIterations ui
 		}
 	}
 
-	return &IterationResult{longExcursions: longExcursions, Impacts: trajectory}
+	return &IterationResult{LongExcursions: longExcursions, Impacts: trajectory}
 }
 
 // Convenient overload

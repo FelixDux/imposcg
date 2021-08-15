@@ -1,9 +1,12 @@
 package classifyorbits
 
 import (
-    "github.com/FelixDux/imposcg/dynamics/forcingphase"
-	"github.com/FelixDux/imposcg/dynamics"
 	"fmt"
+	"runtime"
+
+	"github.com/FelixDux/imposcg/dynamics"
+	"github.com/FelixDux/imposcg/dynamics/forcingphase"
+	"github.com/FelixDux/imposcg/dynamics/impact"
 )
 
 type OrbitClassification struct {
@@ -49,17 +52,62 @@ func (classifier OrbitClassifier) Classify(phi float64, velocity float64) OrbitC
 }
 
 
-
 func (classifier OrbitClassifier) BuildClassification(numPhases uint, numVelocities uint, maxVelocity float64) [] OrbitClassificationResult {
 
 	result := make([]OrbitClassificationResult, numPhases*numVelocities)
+
+	numRanges := runtime.GOMAXPROCS(0)-1
+
+	if numRanges < 1 {
+		numRanges = 1
+	}
+
+	channels := make([]chan OrbitClassificationResult, numRanges)
+
+	deltaMaxVelocity := maxVelocity / float64(numRanges)
+
+	velocitiesPerRange := numVelocities / uint(numRanges)
+
+	minVelocity := float64(0)
+
+	maxVelocityForRange := deltaMaxVelocity
+
+	velocitiesRemaining := numVelocities
+
+	for i := 0; i < numRanges; i++ {
+		if i == numRanges-1 {
+			velocitiesPerRange = velocitiesRemaining
+			maxVelocityForRange = maxVelocity
+		} else {
+			velocitiesRemaining -= velocitiesPerRange
+		}
+
+		channels[i] = make(chan OrbitClassificationResult, velocitiesPerRange)
+		
+		go classifier.ClassifyForRange(numPhases, velocitiesPerRange, minVelocity, maxVelocityForRange,
+			channels[i])
+
+		minVelocity = maxVelocityForRange
+		maxVelocityForRange += deltaMaxVelocity
+	}
+
+	resultCount := uint(0)
+
+	for resultCount < numPhases*numVelocities {
+
+		for i := 0; i < numRanges; i++ {
+			result[resultCount] = <- channels[i]
+
+			resultCount++
+		}
+	}
 
 	return result
 }
 
 
 func (classifier OrbitClassifier) ClassifyForRange(numPhases uint, numVelocities uint, 
-	minVelocity float64, maxVelocity float64, result chan OrbitClassificationResult) {
+	minVelocity float64, maxVelocity float64, result chan<- OrbitClassificationResult) {
 
 	deltaPhi := 1.0 / float64(numPhases+1)
 	deltaV := (maxVelocity - minVelocity) / float64(numVelocities+1)
@@ -120,4 +168,16 @@ func NewOrbitClassifierFunction(converter forcingphase.PhaseConverter) func(*dyn
 
 		return *result
 	}
+}
+
+func MarshalClassifications(classifications * [] OrbitClassificationResult) *map[string][]impact.SimpleImpact {
+	result := map[string][]impact.SimpleImpact{}
+
+	for _, classification := range *classifications {
+		label := classification.Classification.label()
+
+		result[label] = append(result[label], impact.SimpleImpact{Phase: classification.Phi, Velocity: classification.V})
+	}
+
+	return &result
 }

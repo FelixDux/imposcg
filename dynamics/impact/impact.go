@@ -25,6 +25,11 @@ type Impact struct {
 	Velocity float64
 }
 
+type SimpleImpact struct {
+	Phase float64
+	Velocity float64
+}
+
 type Generator func(impactTime float64, impactVelocity float64) *Impact
 
 func ImpactGenerator(phaseConverter forcingphase.PhaseConverter) func(impactTime float64, impactVelocity float64) *Impact {

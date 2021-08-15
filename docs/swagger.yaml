@@ -20,6 +20,8 @@ definitions:
         items:
           $ref: '#/definitions/impact.Impact'
         type: array
+      longExcursions:
+        type: boolean
     type: object
   impact.Impact:
     properties:
@@ -37,6 +39,135 @@ info:
   title: Impact Oscillator
   version: "1.0"
 paths:
+  /doa/data/:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Return domains of attraction for the impact map for a specified
+        set of parameters
+      operationId: post-doa-data
+      parameters:
+      - description: Forcing frequency
+        in: formData
+        minimum: 0
+        name: frequency
+        required: true
+        type: number
+      - description: Obstacle offset from origin
+        in: formData
+        name: offset
+        required: true
+        type: number
+      - description: Coefficient of restitution
+        in: formData
+        maximum: 1
+        minimum: 0
+        name: r
+        required: true
+        type: number
+      - default: 100
+        description: Number of periods without an impact after which the algorithm
+          will report 'long excursions'
+        in: formData
+        name: maxPeriods
+        type: integer
+      - default: 500
+        description: Number of iterations of impact map
+        in: formData
+        name: numIterations
+        type: integer
+      - default: 4
+        description: Upper limit of impact velocity range for DOA plot
+        in: formData
+        name: maxVelocity
+        required: true
+        type: number
+      - default: 100
+        description: Size of grid along the φ-axis
+        in: formData
+        name: numPhases
+        type: integer
+      - description: Size of grid along the v-axis
+        in: formData
+        name: numVelocities
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dynamics.IterationResult'
+        "400":
+          description: Invalid parameters
+          schema:
+            type: string
+      summary: Domain of attraction data
+  /doa/image/:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Plot domains of attraction for the impact map for a specified set
+        of parameters
+      operationId: post-doa-image
+      parameters:
+      - description: Forcing frequency
+        in: formData
+        minimum: 0
+        name: frequency
+        required: true
+        type: number
+      - description: Obstacle offset from origin
+        in: formData
+        name: offset
+        required: true
+        type: number
+      - description: Coefficient of restitution
+        in: formData
+        maximum: 1
+        minimum: 0
+        name: r
+        required: true
+        type: number
+      - default: 100
+        description: Number of periods without an impact after which the algorithm
+          will report 'long excursions'
+        in: formData
+        name: maxPeriods
+        type: integer
+      - default: 500
+        description: Number of iterations of impact map
+        in: formData
+        name: numIterations
+        type: integer
+      - default: 4
+        description: Upper limit of impact velocity range for DOA plot
+        in: formData
+        name: maxVelocity
+        required: true
+        type: number
+      - default: 100
+        description: Size of grid along the φ-axis
+        in: formData
+        name: numPhases
+        type: integer
+      - default: 100
+        description: Size of grid along the v-axis
+        in: formData
+        name: numVelocities
+        type: integer
+      produces:
+      - image/png
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dynamics.IterationResult'
+        "400":
+          description: Invalid parameters
+          schema:
+            type: string
+      summary: Domain of attraction plot
   /iteration/data/:
     post:
       consumes:

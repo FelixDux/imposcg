@@ -175,3 +175,59 @@ func SingularitySetInputsFromSource(c *gin.Context, source func(string) string) 
 func SingularitySetInputsFromPost(c *gin.Context) (uint, *parameters.Parameters, string) {
 	return SingularitySetInputsFromSource(c, c.Request.PostFormValue)
 }
+
+type DOAInputs struct {
+	numIterations uint
+	numPhases uint
+	numVelocities uint
+	maxVelocity float64
+}
+
+func DOAInputsFromSource(c *gin.Context, source func(string) string) (*DOAInputs, *parameters.Parameters, string) {
+	input := DOAInputs{}
+	errorStrings := make([]string, 0, 6)
+
+	maxVelocity, errString := float64FromSource(c, "maxVelocity", source)
+
+	if errString != "" {
+		errorStrings = append(errorStrings, errString)
+	} else {
+		input.maxVelocity = maxVelocity
+	}
+
+	numPhases, errString := uintFromSource(c, "numPhases", source)
+
+	if errString != "" {
+		errorStrings = append(errorStrings, errString)
+	} else {
+		input.numPhases = numPhases
+	}
+
+	numVelocities, errString := uintFromSource(c, "numVelocities", source)
+
+	if errString != "" {
+		errorStrings = append(errorStrings, errString)
+	} else {
+		input.numVelocities = numVelocities
+	}
+
+	numIterations, errString := uintFromSource(c, "numIterations", source)
+
+	if errString != "" {
+		errorStrings = append(errorStrings, errString)
+	} else {
+		input.numIterations = numIterations
+	}
+
+	if len(errorStrings) > 0 {
+		return nil, nil, strings.Join(errorStrings, "\n")
+	} else {
+		parameters, paramErrors := ParametersFromSource(c, source)
+
+		return &input, parameters, paramErrors
+	}
+}
+
+func DOAInputsFromPost(c *gin.Context) (*DOAInputs, *parameters.Parameters, string) {
+	return DOAInputsFromSource(c, c.Request.PostFormValue)
+}

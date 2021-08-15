@@ -8,6 +8,183 @@
     },
     "basePath": "/api",
     "paths": {
+        "/doa/data/": {
+            "post": {
+                "description": "Return domains of attraction for the impact map for a specified set of parameters",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Domain of attraction data",
+                "operationId": "post-doa-data",
+                "parameters": [
+                    {
+                        "minimum": 0,
+                        "type": "number",
+                        "description": "Forcing frequency",
+                        "name": "frequency",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Obstacle offset from origin",
+                        "name": "offset",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "maximum": 1,
+                        "minimum": 0,
+                        "type": "number",
+                        "description": "Coefficient of restitution",
+                        "name": "r",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 100,
+                        "description": "Number of periods without an impact after which the algorithm will report 'long excursions'",
+                        "name": "maxPeriods",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 500,
+                        "description": "Number of iterations of impact map",
+                        "name": "numIterations",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "number",
+                        "default": 4,
+                        "description": "Upper limit of impact velocity range for DOA plot",
+                        "name": "maxVelocity",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 100,
+                        "description": "Size of grid along the φ-axis",
+                        "name": "numPhases",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Size of grid along the v-axis",
+                        "name": "numVelocities",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dynamics.IterationResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/doa/image/": {
+            "post": {
+                "description": "Plot domains of attraction for the impact map for a specified set of parameters",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "image/png"
+                ],
+                "summary": "Domain of attraction plot",
+                "operationId": "post-doa-image",
+                "parameters": [
+                    {
+                        "minimum": 0,
+                        "type": "number",
+                        "description": "Forcing frequency",
+                        "name": "frequency",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Obstacle offset from origin",
+                        "name": "offset",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "maximum": 1,
+                        "minimum": 0,
+                        "type": "number",
+                        "description": "Coefficient of restitution",
+                        "name": "r",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 100,
+                        "description": "Number of periods without an impact after which the algorithm will report 'long excursions'",
+                        "name": "maxPeriods",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 500,
+                        "description": "Number of iterations of impact map",
+                        "name": "numIterations",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "number",
+                        "default": 4,
+                        "description": "Upper limit of impact velocity range for DOA plot",
+                        "name": "maxVelocity",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 100,
+                        "description": "Size of grid along the φ-axis",
+                        "name": "numPhases",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 100,
+                        "description": "Size of grid along the v-axis",
+                        "name": "numVelocities",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dynamics.IterationResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/iteration/data/": {
             "post": {
                 "description": "Return data from iterating the impact map for a specified set of parameters",
@@ -376,6 +553,9 @@
                     "items": {
                         "$ref": "#/definitions/impact.Impact"
                     }
+                },
+                "longExcursions": {
+                    "type": "boolean"
                 }
             }
         },

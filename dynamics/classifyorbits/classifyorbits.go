@@ -119,13 +119,13 @@ func (classifier OrbitClassifier) BuildClassification(numPhases uint, numVelocit
 func (classifier OrbitClassifier) ClassifyForRange(numPhases uint, numVelocities uint, 
 	minVelocity float64, maxVelocity float64, result chan<- OrbitClassificationResult) {
 
-	deltaPhi := 1.0 / float64(numPhases+1)
-	deltaV := (maxVelocity - minVelocity) / float64(numVelocities+1)
+	deltaPhi := 1.0 / float64(numPhases)
+	deltaV := (maxVelocity - minVelocity) / float64(numVelocities)
 
-	phi := deltaPhi / 2.0
+	phi := deltaPhi
 
 	for i:=uint(0); i < numPhases; i++ {
-		v := deltaV / 2.0
+		v := minVelocity + deltaV
 		for j:=uint(0); j < numVelocities; j++ {
 			result <- classifier.Classify(phi, v)
 			v += deltaV
@@ -154,9 +154,8 @@ func NewOrbitClassifierFunction(converter forcingphase.PhaseConverter) func(*dyn
 			comparator := iterationResult.Impacts[lastIdx]
 
 			// reverse iterate through impacts
-			for i := lastIdx; lastIdx >= 0 && result.chaos; lastIdx-- {
+			for i := lastIdx-1; i >= 0 && result.chaos; i-- {
 				impact := iterationResult.Impacts[i]
-				result.numImpacts++
 
 				// a zero velocity implies chatter
 				if impact.Velocity == 0 {
@@ -170,6 +169,7 @@ func NewOrbitClassifierFunction(converter forcingphase.PhaseConverter) func(*dyn
 
 					if result.numPeriods > 0 {
 						result.chaos = false
+						result.numImpacts = uint(lastIdx-i)
 					}
 				}
 			}

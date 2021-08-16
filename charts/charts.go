@@ -15,6 +15,7 @@ import (
 	"gonum.org/v1/plot/font"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
+	"gonum.org/v1/plot/vg/draw"
 )
 
 func ImageFile(prefix string) *os.File {
@@ -34,7 +35,7 @@ func (phaseTicks) Ticks(min, max float64) []plot.Tick {
 	return []plot.Tick{{Label: "0", Value: min}, {Label: "π/ω", Value: 0.5*(max-min)}, {Label: "2π/ω", Value: max}}
 }
 
-func DOAPlotter(priority int, impactData []impact.SimpleImpact) *plotter.Scatter {
+func DOAPlotter(priorityColor color.RGBA, impactData []impact.SimpleImpact) *plotter.Scatter {
 	scatterData := make(plotter.XYs, len(impactData))
 
 	for i, point := range(impactData) {
@@ -48,10 +49,9 @@ func DOAPlotter(priority int, impactData []impact.SimpleImpact) *plotter.Scatter
 		panic(err)
 	}
 
-	colorLevel := uint8(priority*25)
-
-	s.GlyphStyle.Color = color.RGBA{R: colorLevel, B: colorLevel, A: 255}
-	s.GlyphStyle.Radius = 0.5
+	s.GlyphStyle.Color = priorityColor
+	s.GlyphStyle.Radius = 10
+	s.GlyphStyle.Shape = draw.BoxGlyph{}
 
 	return s
 }
@@ -134,8 +134,10 @@ func DOAPlot(parameters parameters.Parameters, data *map[string][]impact.SimpleI
 
 	priority := int(0)
 
+	picker := DOAColorPicker(len(*data))
+
 	for label, impacts := range *data {
-		p.Add(DOAPlotter(priority, impacts))
+		p.Add(DOAPlotter(picker(priority), impacts))
 
 		p.Legend.Add(label)
 
@@ -143,4 +145,27 @@ func DOAPlot(parameters parameters.Parameters, data *map[string][]impact.SimpleI
 	}
 
 	return ImageToFile(p)
+}
+
+func DOAColorPicker(numPriorities int) func(int) color.RGBA {
+
+	colorDelta := uint(3*255 / numPriorities)
+
+	return func(priority int) color.RGBA {
+
+		colorLevel := priority * int(colorDelta)
+
+		OffsetColorLevel := func (offset int) uint8 {
+			result := colorLevel - offset * 255
+			if result > 255 {
+				result = 255
+			}
+			if result < 0 {
+				result = 128
+			}
+			return uint8(result)
+		}
+
+		return color.RGBA{R: OffsetColorLevel(0), B: OffsetColorLevel(1), G: OffsetColorLevel(2), A: 255}
+	}
 }

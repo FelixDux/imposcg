@@ -75,6 +75,7 @@
                     },
                     {
                         "type": "integer",
+                        "default": 100,
                         "description": "Size of grid along the v-axis",
                         "name": "numVelocities",
                         "in": "formData"

@@ -87,7 +87,8 @@ paths:
         in: formData
         name: numPhases
         type: integer
-      - description: Size of grid along the v-axis
+      - default: 100
+        description: Size of grid along the v-axis
         in: formData
         name: numVelocities
         type: integer

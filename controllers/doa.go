@@ -41,7 +41,7 @@ func GenerateDOAData(parameters *parameters.Parameters, inputs *DOAInputs) (*map
 // @Param numIterations formData int false "Number of iterations of impact map" default(500)
 // @Param maxVelocity formData number true "Upper limit of impact velocity range for DOA plot" default(4.0)
 // @Param numPhases formData int false "Size of grid along the φ-axis" default(100)
-// @Param numVelocities formData int false "Size of grid along the v-axis" default (100)
+// @Param numVelocities formData int false "Size of grid along the v-axis" default(100)
 // @Success 200 {object} dynamics.IterationResult
 // @Failure 400 {object} string "Invalid parameters"
 // @Router /doa/data/ [post]

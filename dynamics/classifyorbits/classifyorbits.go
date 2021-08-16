@@ -64,6 +64,8 @@ func (classifier OrbitClassifier) BuildClassification(numPhases uint, numVelocit
 
 	channels := make([]chan OrbitClassificationResult, numRanges)
 
+	resultsCounters := make([]uint, numRanges)
+
 	deltaMaxVelocity := maxVelocity / float64(numRanges)
 
 	velocitiesPerRange := numVelocities / uint(numRanges)
@@ -82,7 +84,9 @@ func (classifier OrbitClassifier) BuildClassification(numPhases uint, numVelocit
 			velocitiesRemaining -= velocitiesPerRange
 		}
 
-		channels[i] = make(chan OrbitClassificationResult, velocitiesPerRange)
+		resultsCounters[i] = velocitiesPerRange*numPhases
+
+		channels[i] = make(chan OrbitClassificationResult, velocitiesPerRange*numPhases)
 		
 		go classifier.ClassifyForRange(numPhases, velocitiesPerRange, minVelocity, maxVelocityForRange,
 			channels[i])
@@ -93,12 +97,18 @@ func (classifier OrbitClassifier) BuildClassification(numPhases uint, numVelocit
 
 	resultCount := uint(0)
 
-	for resultCount < numPhases*numVelocities {
+	numResults := numPhases*numVelocities
 
-		for i := 0; i < numRanges; i++ {
-			result[resultCount] = <- channels[i]
+	for resultCount < numResults {
 
-			resultCount++
+		for i := 0; i < numRanges && resultCount < numResults; i++ {
+			if resultsCounters[i] > 0 {
+				result[resultCount] = <- channels[i]
+
+				resultCount++
+
+				resultsCounters[i]--
+			}
 		}
 	}
 
@@ -113,15 +123,14 @@ func (classifier OrbitClassifier) ClassifyForRange(numPhases uint, numVelocities
 	deltaV := (maxVelocity - minVelocity) / float64(numVelocities+1)
 
 	phi := deltaPhi / 2.0
-	v := deltaV / 2.0
 
 	for i:=uint(0); i < numPhases; i++ {
+		v := deltaV / 2.0
 		for j:=uint(0); j < numVelocities; j++ {
 			result <- classifier.Classify(phi, v)
-
-			phi += deltaPhi
 			v += deltaV
 		}
+		phi += deltaPhi
 	}
 
 }

@@ -133,7 +133,7 @@ func DOAPlot(parameters parameters.Parameters, radius font.Length, data *map[str
 	p := PreparePlot(parameters, "Domains of attraction")
 
 	p.Legend.ThumbnailWidth = 10
-	p.Legend.XOffs = 60
+	p.Legend.YPosition = draw.PosCenter
 
 	priority := int(0)
 

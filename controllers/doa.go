@@ -99,7 +99,7 @@ func PostDOAImage(c *gin.Context) {
 		return
 	}
 
-	plot := charts.DOAPlot(*parameters, data)
+	plot := charts.DOAPlot(*parameters, charts.DOARadius(inputs.numPhases, inputs.numVelocities), data)
 
 	img, err := os.Open(plot.Name())
 	if err != nil {

@@ -35,7 +35,7 @@ func (phaseTicks) Ticks(min, max float64) []plot.Tick {
 	return []plot.Tick{{Label: "0", Value: min}, {Label: "π/ω", Value: 0.5*(max-min)}, {Label: "2π/ω", Value: max}}
 }
 
-func DOAPlotter(priorityColor color.RGBA, impactData []impact.SimpleImpact) *plotter.Scatter {
+func DOAPlotter(priorityColor color.RGBA, radius font.Length, impactData []impact.SimpleImpact) *plotter.Scatter {
 	scatterData := make(plotter.XYs, len(impactData))
 
 	for i, point := range(impactData) {
@@ -50,7 +50,7 @@ func DOAPlotter(priorityColor color.RGBA, impactData []impact.SimpleImpact) *plo
 	}
 
 	s.GlyphStyle.Color = priorityColor
-	s.GlyphStyle.Radius = 10
+	s.GlyphStyle.Radius = radius
 	s.GlyphStyle.Shape = draw.BoxGlyph{}
 
 	return s
@@ -129,7 +129,7 @@ func ImpactMapPlot(parameters parameters.Parameters, impactData [][]impact.Impac
 	return ScatterPlot(parameters, impactData, fmt.Sprintf("Initial impact at (φ = %g, v = %g)", phi, v))
 }
 
-func DOAPlot(parameters parameters.Parameters, data *map[string][]impact.SimpleImpact) *os.File {
+func DOAPlot(parameters parameters.Parameters, radius font.Length, data *map[string][]impact.SimpleImpact) *os.File {
 	p := PreparePlot(parameters, "Domains of attraction")
 
 	priority := int(0)
@@ -137,7 +137,7 @@ func DOAPlot(parameters parameters.Parameters, data *map[string][]impact.SimpleI
 	picker := DOAColorPicker(len(*data))
 
 	for label, impacts := range *data {
-		p.Add(DOAPlotter(picker(priority), impacts))
+		p.Add(DOAPlotter(picker(priority), radius, impacts))
 
 		p.Legend.Add(label)
 
@@ -167,5 +167,14 @@ func DOAColorPicker(numPriorities int) func(int) color.RGBA {
 		}
 
 		return color.RGBA{R: OffsetColorLevel(0), B: OffsetColorLevel(1), G: OffsetColorLevel(2), A: 255}
+	}
+}
+
+func DOARadius(numPhases uint, numVelocities uint) font.Length {
+	multiplier := float32(300.0)
+	if numPhases > numVelocities {
+		return font.Length(multiplier / float32(numPhases))
+	} else {
+		return font.Length(multiplier / float32(numVelocities))
 	}
 }

@@ -132,14 +132,19 @@ func ImpactMapPlot(parameters parameters.Parameters, impactData [][]impact.Impac
 func DOAPlot(parameters parameters.Parameters, radius font.Length, data *map[string][]impact.SimpleImpact) *os.File {
 	p := PreparePlot(parameters, "Domains of attraction")
 
+	p.Legend.ThumbnailWidth = 10
+	p.Legend.XOffs = 60
+
 	priority := int(0)
 
 	picker := DOAColorPicker(len(*data))
 
 	for label, impacts := range *data {
-		p.Add(DOAPlotter(picker(priority), radius, impacts))
+		plt := DOAPlotter(picker(priority), radius, impacts)
 
-		p.Legend.Add(label)
+		p.Add(plt)
+
+		p.Legend.Add(label, plt)
 
 		priority++
 	}

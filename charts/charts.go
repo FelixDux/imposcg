@@ -100,7 +100,7 @@ func PreparePlot(parameters parameters.Parameters, info string) *plot.Plot {
 func ImageToFile(p *plot.Plot) *os.File {
 	// Save the plot to a PNG file.
 	imageFile := ImageFile("scatter")
-	scale := font.Length(8)
+	scale := font.Length(6)
 	if err := p.Save(scale*vg.Inch, scale*vg.Inch, imageFile.Name()); err != nil {
 		panic(err)
 	}
@@ -134,6 +134,7 @@ func DOAPlot(parameters parameters.Parameters, radius font.Length, data *map[str
 
 	p.Legend.ThumbnailWidth = 10
 	p.Legend.YPosition = draw.PosCenter
+	// p.Legend.XOffs = 60
 
 	priority := int(0)
 

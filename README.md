@@ -70,10 +70,10 @@ The software generates graphical plots of the following:
 
 - Scatter plots of iterated applications of the impact map for a given set of parameter values and initial conditions
 - Plots of the singularity set on the impact surface
+- Domain of attraction plots on the impact surface for competing ![equation](https://latex.codecogs.com/png.latex?%28%20m%20%2C%20n%29), ![equation](https://latex.codecogs.com/png.latex?%28%5Cinfty%20%2C%20n%29) and chaotic orbits (be warned: these can take a long time to run - and are likely to timeout on [AWS Lambda](https://4nese8424h.execute-api.eu-west-2.amazonaws.com))
 
 Various other interesting plots will come later, time permitting, including:
 
-- Domain of attraction plots on the impact surface for competing ![equation](https://latex.codecogs.com/png.latex?%28%20m%20%2C%20n%29), ![equation](https://latex.codecogs.com/png.latex?%28%5Cinfty%20%2C%20n%29) and chaotic orbits
 - ![equation](https://latex.codecogs.com/png.latex?V_%7Bn%7D%2C%20%5Csigma) response curves for (1, *n*) orbits for a given values of ![equation](https://latex.codecogs.com/png.latex?%5Comega) and *r*, showing bifurcation points where orbits become dynamically unstable or unphysical (the latter established numerically)
 - Time series plots of *x*(*t*) for a given set of parameter values and initial conditions
 - The 'stroboscopic' Poincar&#233; map, which samples the displacement and velocity at each forcing cycle
@@ -84,6 +84,8 @@ Various other interesting plots will come later, time permitting, including:
 ## Architecture
 
 The implementation is in Go and uses [Gin](http://github.com/swaggo/gin-swagger) to expose an HTTP API and to serve an SPA from the root endpoint, which acts as a front-end to the API. To illustrate its capability, it has been deployed on AWS lambda behind an AWS API Gateway. You can access the SPA [here](https://4nese8424h.execute-api.eu-west-2.amazonaws.com) or, alternatively, you can try out the API endpoints [here](https://4nese8424h.execute-api.eu-west-2.amazonaws.com/swagger/index.html).
+
+The AWS Lambda deployment was just to give me practice in basic AWS provisioning. Given sufficient time, I will investigate a distributed architecture in which large jobs (impact maps with > 5000 iterations, or domain of attraction plots with, say, a 200 ![equation](https://latex.codecogs.com/png.latex?%5Ctimes) 200 grid) will be chunked into separate Lambda calls (sequentially in the case of an impact map, in parallel in the case of a domain of attraction plot or a singularity set), each of which is small enough not to time out.
 
 ## Installing and Running
 

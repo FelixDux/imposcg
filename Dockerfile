@@ -11,5 +11,3 @@ COPY . .
 RUN go build
 EXPOSE $PORT
 ENTRYPOINT ["./imposcg"]
-# CMD ["bee", "run"]
-# CMD ["go", "run", "impact.oscillator.go"]

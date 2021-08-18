@@ -67,6 +67,9 @@ func GetParameterGroups(c *gin.Context) {
 		"maxPeriods": ctlParams,
 		"numIterations": ctlParams,
 		"numPoints": ctlParams,
+		"numPhases": ctlParams,
+		"numVelocities": ctlParams,
+		"maxVelocity": ctlParams,
 	}
 
 	for k, v := range groups {

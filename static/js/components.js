@@ -9,6 +9,13 @@ function refreshImage(blob, result) {
     imageRefresher(`<img src=${URL.createObjectURL(blob)} alt=${result} width="50%" align="center" />`);
 }
 
+function clearImage() {
+    fetch("/spinner.html").then((response) => {
+        return response.text();
+    })
+    .then((text) => imageRefresher(text))
+}
+
 function refreshImageWithError(error) {
     imageRefresher(`<h1>Error</h1>${error.toString()}`);
 }
@@ -314,6 +321,7 @@ class PathsHolder {
         let elem = document.getElementById('form');
 
         elem.addEventListener("submit", function (event) {
+            clearImage();
             fetch(elem.action,
               {
                 method: 'POST',

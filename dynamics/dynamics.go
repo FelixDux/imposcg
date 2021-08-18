@@ -1,10 +1,13 @@
 package dynamics
+
 import (
-    "github.com/FelixDux/imposcg/dynamics/impact"
-    "github.com/FelixDux/imposcg/dynamics/parameters"
-    "github.com/FelixDux/imposcg/dynamics/sticking"
-    "github.com/FelixDux/imposcg/dynamics/motion"
 	"math"
+
+	"github.com/FelixDux/imposcg/dynamics/forcingphase"
+	"github.com/FelixDux/imposcg/dynamics/impact"
+	"github.com/FelixDux/imposcg/dynamics/motion"
+	"github.com/FelixDux/imposcg/dynamics/parameters"
+	"github.com/FelixDux/imposcg/dynamics/sticking"
 )
 
 type ChatterResult struct {
@@ -80,7 +83,7 @@ type IterationResult struct
 {
 	Impacts []impact.Impact
 
-	longExcursions bool
+	LongExcursions bool
 }
 
 type ImpactResult struct 
@@ -156,13 +159,17 @@ func (impactMap ImpactMap) iterate(initialImpact impact.Impact, numIterations ui
 		}
 	}
 
-	return &IterationResult{longExcursions: longExcursions, Impacts: trajectory}
+	return &IterationResult{LongExcursions: longExcursions, Impacts: trajectory}
 }
 
 // Convenient overload
 func (impactMap ImpactMap) IterateFromPoint(phi float64, v float64, numIterations uint) *IterationResult {
 	t := impactMap.chatterChecker.sticking.Converter.TimeIntoCycle(phi)
 	return impactMap.iterate(*impactMap.GenerateImpact(t, v), numIterations)
+}
+
+func (impactMap ImpactMap) Converter() *forcingphase.PhaseConverter {
+	return &impactMap.chatterChecker.sticking.Converter
 }
 
 // Generate a singularity set

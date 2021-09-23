@@ -41,7 +41,7 @@ func iterationImage(parameters *parameters.Parameters, phi float64, v float64, n
 // @Description Return scatter plot from iterating the impact map for a specified set of parameters
 // @ID post-iteration-image
 // @Accept x-www-form-urlencoded
-// @Produce  png
+// @Produce png
 // @Param frequency formData number true "Forcing frequency" minimum(0)
 // @Param offset formData number true "Obstacle offset from origin" 
 // @Param r formData number true "Coefficient of restitution" minimum(0) maximum(1) 
@@ -76,7 +76,7 @@ func PostIterationImage(c *gin.Context) {
 // @Description Return data from iterating the impact map for a specified set of parameters
 // @ID post-iteration-data
 // @Accept  x-www-form-urlencoded
-// @Produce  json
+// @Produce json
 // @Param frequency formData number true "Forcing frequency" minimum(0)
 // @Param offset formData number true "Obstacle offset from origin"
 // @Param r formData number true "Coefficient of restitution" minimum(0) maximum(1)

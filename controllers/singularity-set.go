@@ -46,7 +46,7 @@ func singularitySetImage(parameters *parameters.Parameters, numPoints uint) stri
 // @Description Return scatter plot of impacts which map to and from zero velocity impacts for a specified set of parameters
 // @ID post-singularity-set-image
 // @Accept x-www-form-urlencoded
-// @Produce  png
+// @Produce png
 // @Param frequency formData number true "Forcing frequency" minimum(0)
 // @Param offset formData number true "Obstacle offset from origin" 
 // @Param r formData number true "Coefficient of restitution" minimum(0) maximum(1)

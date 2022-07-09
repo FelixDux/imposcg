@@ -125,7 +125,7 @@ func (impactMap ImpactMap) GenerateImpact(Time float64, Velocity float64) *impac
 }
 
 // Apply the map to an impact
- func (impactMap ImpactMap) apply(impact impact.Impact) *ImpactResult {
+func (impactMap ImpactMap) apply(impact impact.Impact) *ImpactResult {
 	trajectory := *impactMap.motion.NextImpact(impact)
 
 	stateAtImpact := trajectory.Motion[len(trajectory.Motion)-1]

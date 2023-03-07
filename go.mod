@@ -19,7 +19,6 @@ require (
 	github.com/swaggo/gin-swagger v1.5.1
 	github.com/swaggo/swag v1.8.3
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
-	golang.org/x/image v0.0.0-20220617043117-41969df76e82 // indirect
-	golang.org/x/text v0.3.8 // indirect
+	golang.org/x/image v0.5.0 // indirect
 	gonum.org/v1/plot v0.11.0
 )

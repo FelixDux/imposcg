@@ -34,5 +34,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
       - name: Upload Zip
+        if: ${{ !github.event.pull_request }}
         working-directory: ./lambda-build
         run: aws lambda update-function-code --function-name ImpactOscillator --zip-file fileb://imposcg.zip

@@ -36,8 +36,8 @@ jobs:
       - name: Check Zip
         if: ${{ github.event.pull_request }}
         working-directory: ./lambda-build
-        run: pwd && ls -l
+        run: pwd && realpath $( ls *.zip -tr|tail -1)
       - name: Upload Zip
         if: ${{ !github.event.pull_request }}
         working-directory: ./lambda-build
-        run: aws lambda update-function-code --function-name ImpactOscillator --zip-file fileb://imposcg.zip
+        run: aws lambda update-function-code --function-name ImpactOscillator --zip-file fileb://$( ls *.zip -tr|tail -1)

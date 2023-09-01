@@ -1,0 +1,39 @@
+# 
+
+name: Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  Deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.20.1
+      - name: Build
+        run: env GOOS=linux ARCH=amd64 go build ./impact.oscillator.go
+      - name: Zip
+        run: |
+          zip -r imposcg.zip .
+          zipinfo imposcg.zip
+          mkdir lambda-build 2>/dev/null
+          mv imposcg.zip lambda-build/$(bash ./terraform/get_source_archive.bash)
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      - name: Upload Zip
+        if: ${{ !github.event.pull_request }}
+        working-directory: ./lambda-build
+        run: aws lambda update-function-code --function-name ImpactOscillator --zip-file fileb://imposcg.zip

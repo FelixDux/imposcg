@@ -1,4 +1,5 @@
 # Impact Oscillator
+
 ## Overview
 This project is an opportunity for me to practice some new (for me) programming techniques, while at the same time indulging in a bit of nostalgia by revisiting the research I did for my PhD. I have not kept up to date with developments in the field since I left academia in 1992, so nothing in this project is likely to contribute to current research. Instead my aim is to reproduce the programming aspects of the work I did then, but with the benefit of 3 decades of software engineering experience and using languages and technologies which were not available back then.
 
